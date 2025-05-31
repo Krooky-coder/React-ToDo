@@ -13,17 +13,15 @@ export default function TodoList ({ setTasks, tasks }: TodoListProps) {
         setIsDone(tasks)
     }, [tasks])
 
-    const newDone = [...isDone];
     const handleClickSetDone = (index: number) => {
+        const newDone = [...isDone];
         newDone[index].status = !newDone[index].status;
-
-        setIsDone(newDone)
         setTasks(newDone)
     }
-
+    
     const handleClickDelete = (index: number) => {
+        const newDone = [...isDone];
         const newTasks = newDone.filter((_, i) => i !== index);
-        setIsDone(newTasks)
         setTasks(newTasks)
     }
 
