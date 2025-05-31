@@ -20,8 +20,8 @@ function App() {
   };
 
   useEffect(() => {
-    
-  }, [value]);
+    setValue(tasks)
+  }, [tasks]);
 
   return (
     <div>

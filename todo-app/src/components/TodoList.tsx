@@ -6,16 +6,15 @@ interface TodoListProps {
     setTasks: (newValue: TodoItem[]) => void
 }
 
-export default function TodoList ({ tasks, setTasks }: TodoListProps) {
+export default function TodoList ({ setTasks, tasks }: TodoListProps) {
 
     const [isDone, setIsDone] = useState<TodoItem[]>([])
     useEffect (() => {
         setIsDone(tasks)
-
     }, [tasks])
 
+    const newDone = [...isDone];
     const handleClickSetDone = (index: number) => {
-        const newDone = [...isDone];
         newDone[index].status = !newDone[index].status;
 
         setIsDone(newDone)
@@ -23,7 +22,9 @@ export default function TodoList ({ tasks, setTasks }: TodoListProps) {
     }
 
     const handleClickDelete = (index: number) => {
-        
+        const newTasks = newDone.filter((_, i) => i !== index);
+        setIsDone(newTasks)
+        setTasks(newTasks)
     }
 
     const taskList = tasks.map((item: TodoItem, index: number) => {
@@ -33,7 +34,7 @@ export default function TodoList ({ tasks, setTasks }: TodoListProps) {
                     {item.status ? item.text + ' ✅' : item.text + ' ❌'}
                 </button>
                 
-                <button onClick={() => handleClickDelete(index)}>удалить</button>
+                <button  onClick={() => handleClickDelete(index)}>удалить</button>
             </li>)
     })
 
