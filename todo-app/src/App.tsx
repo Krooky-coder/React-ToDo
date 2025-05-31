@@ -1,24 +1,26 @@
 import AddTodo from './components/AddTodo'
 import './App.css'
-import TodoList from './components/TodoList'
 import useLocalStorage from './utils/localStorage';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import TodoList from './components/TodoList';
 function App() {
 
   const [tasks, setTasks] = useLocalStorage<string[]>('Tasks', []);
+  const [value, setValue] = useState(tasks)
 
   const handleAddTask = (task: string) => {
-    setTasks([...tasks, task]);
+    setValue([...tasks, task]);
+    setTasks([...tasks, task])
   };
 
   useEffect(() => {
-
-  }, [tasks]);
+    
+  }, []);
 
   return (
     <div>
       <AddTodo onAdd={handleAddTask}/>
-      <TodoList tasks={tasks}/>
+      <TodoList tasks={tasks} />
     </div>
   ) 
 }

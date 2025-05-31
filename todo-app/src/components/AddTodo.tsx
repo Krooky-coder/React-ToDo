@@ -5,6 +5,7 @@ interface AddTodoProps {
 }
 
 export default function AddTodo ({ onAdd }: AddTodoProps) {
+
     const [inputValue, setInputValue] = useState('')
     
     function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
@@ -17,7 +18,6 @@ export default function AddTodo ({ onAdd }: AddTodoProps) {
             setInputValue('')
         }
     }
-
 
     return (
         <div>
