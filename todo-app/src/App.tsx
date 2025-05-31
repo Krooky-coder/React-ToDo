@@ -6,21 +6,23 @@ import TodoList from './components/TodoList';
 function App() {
 
   const [tasks, setTasks] = useLocalStorage<string[]>('Tasks', []);
+  const [isDone, setIsDone] = useLocalStorage<boolean[]>('isDone', []);
   const [value, setValue] = useState(tasks)
 
   const handleAddTask = (task: string) => {
-    setValue([...tasks, task]);
+    setValue([...tasks]);
     setTasks([...tasks, task])
+    setIsDone([...isDone, false])
   };
 
   useEffect(() => {
     
-  }, []);
+  }, [value]);
 
   return (
     <div>
       <AddTodo onAdd={handleAddTask}/>
-      <TodoList tasks={tasks} />
+      <TodoList tasks={tasks} tasksDoned={{isDone, setIsDone}} />
     </div>
   ) 
 }

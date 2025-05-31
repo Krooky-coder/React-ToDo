@@ -2,7 +2,6 @@ export default function useLocalStorage<T> (key: string, defaultValue: T) {
     const storedValue = localStorage.getItem(key);
     const initialValue: T = storedValue ? JSON.parse(storedValue) : defaultValue;
 
-
     const setStoredValue = (newValue: T) => {
       localStorage.setItem(key, JSON.stringify(newValue));
     };
@@ -13,4 +12,3 @@ export default function useLocalStorage<T> (key: string, defaultValue: T) {
   
     return [initialValue, setStoredValue, removeValue] as const;
 }
-
