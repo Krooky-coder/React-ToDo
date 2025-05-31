@@ -3,16 +3,20 @@ import './App.css'
 import useLocalStorage from './utils/localStorage';
 import { useEffect, useState } from 'react';
 import TodoList from './components/TodoList';
+export interface TodoItem {
+  text: string;
+  status: boolean,
+  date: Date,
+}
 function App() {
 
-  const [tasks, setTasks] = useLocalStorage<string[]>('Tasks', []);
-  const [isDone, setIsDone] = useLocalStorage<boolean[]>('isDone', []);
+
+  const [tasks, setTasks] = useLocalStorage<TodoItem[]>('Tasks', []);
   const [value, setValue] = useState(tasks)
 
-  const handleAddTask = (task: string) => {
+  const handleAddTask = (task: TodoItem) => {
     setValue([...tasks]);
     setTasks([...tasks, task])
-    setIsDone([...isDone, false])
   };
 
   useEffect(() => {
@@ -22,7 +26,7 @@ function App() {
   return (
     <div>
       <AddTodo onAdd={handleAddTask}/>
-      <TodoList tasks={tasks} tasksDoned={{isDone, setIsDone}} />
+      <TodoList tasks={tasks} setTasks={setTasks} />
     </div>
   ) 
 }

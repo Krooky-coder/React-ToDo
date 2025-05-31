@@ -1,40 +1,39 @@
 import { useEffect, useState } from "react";
+import { type TodoItem } from '../App.tsx'
+
 interface TodoListProps {
-    tasks: string[];
-    tasksDoned: {
-        isDone: boolean[];
-        setIsDone: (newValue: boolean[]) => void;
-    }
+    tasks: TodoItem[];
+    setTasks: (newValue: TodoItem[]) => void
 }
 
+export default function TodoList ({ tasks, setTasks }: TodoListProps) {
 
-export default function TodoList ({ tasks, tasksDoned }: TodoListProps) {
-
-    const [isDone, setIsDone] = useState<boolean[]>([])
+    const [isDone, setIsDone] = useState<TodoItem[]>([])
     useEffect (() => {
-        setIsDone(tasksDoned.isDone)
-    }, [tasksDoned.isDone])
+        setIsDone(tasks)
+
+    }, [tasks])
 
     const handleClickSetDone = (index: number) => {
         const newDone = [...isDone];
-        newDone[index] = !newDone[index];
+        newDone[index].status = !newDone[index].status;
 
         setIsDone(newDone)
-        tasksDoned.setIsDone(newDone)
+        setTasks(newDone)
     }
 
-
-    const handleClickDelete = () => {
+    const handleClickDelete = (index: number) => {
+        
     }
 
-    const taskList = tasks.map((item: string, index: number) => {
+    const taskList = tasks.map((item: TodoItem, index: number) => {
         return (
-            <li >
+            <li>
                 <button id={`${index}`} onClick={() => handleClickSetDone(index)}>
-                    {isDone[index] ? item + ' ✅' : item + ' ❌'}
+                    {item.status ? item.text + ' ✅' : item.text + ' ❌'}
                 </button>
                 
-                <button onClick={handleClickDelete}>удалить</button>
+                <button onClick={() => handleClickDelete(index)}>удалить</button>
             </li>)
     })
 

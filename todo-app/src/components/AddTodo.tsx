@@ -1,7 +1,7 @@
 import { useState, type ChangeEvent} from 'react';
-
+import { type TodoItem } from '../App.tsx'
 interface AddTodoProps {
-    onAdd: (task: string) => void
+    onAdd: (task: TodoItem) => void
 }
 
 export default function AddTodo ({ onAdd }: AddTodoProps) {
@@ -14,7 +14,11 @@ export default function AddTodo ({ onAdd }: AddTodoProps) {
 
     function handleOnClick () {
         if (inputValue) {
-            onAdd(inputValue)
+            onAdd({
+                text: inputValue,
+                status: false,
+                date: new Date()
+            })
             setInputValue('')
         }
     }
