@@ -12,8 +12,8 @@ function App() {
   const [value, setValue] = useState(tasks)
 
   const handleAddTask = (task: TodoItem) => {
-    setValue([...tasks]);
     setTasks([...tasks, task])
+    setValue([...tasks, task]);
   };
 
   useEffect(() => {
@@ -23,7 +23,7 @@ function App() {
   return (
     <div>
       <AddTodo onAdd={handleAddTask}/>
-      <TodoList tasks={value} setTasks={setValue} />
+      <TodoList tasks={value} setValue={setValue} setTasks={setTasks} />
     </div>
   ) 
 }

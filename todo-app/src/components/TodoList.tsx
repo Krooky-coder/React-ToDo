@@ -4,25 +4,24 @@ import { type TodoItem } from './TodoItem'
 interface TodoListProps {
     tasks: TodoItem[];
     setTasks: (newValue: TodoItem[]) => void
+    setValue: (newValue: TodoItem[]) => void
 }
 
-export default function TodoList ({ setTasks, tasks}: TodoListProps) {
+export default function TodoList ({ setTasks, tasks, setValue }: TodoListProps) {
 
-    const [isDone, setIsDone] = useState<TodoItem[]>([])
-    useEffect (() => {
-        setIsDone(tasks)
-    }, [tasks])
+
 
     const handleClickSetDone = (index: number) => {
-        const newDone = [...isDone];
+        const newDone = [...tasks];
         newDone[index].status = !newDone[index].status;
-        setTasks(newDone)
+        setValue(newDone)
     }
     
     const handleClickDelete = (index: number) => {
-        const newDone = [...isDone];
+        const newDone = [...tasks];
         const newTasks = newDone.filter((_, i) => i !== index);
         setTasks(newTasks)
+        setValue(newTasks)
     }
 
     const taskList = tasks.map((item: TodoItem, index: number) => {
