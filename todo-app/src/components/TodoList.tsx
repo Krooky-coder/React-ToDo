@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import { type TodoItem } from '../App.tsx'
+import { Children, useEffect, useState } from "react";
+import { type TodoItem } from './TodoItem'
 
 interface TodoListProps {
     tasks: TodoItem[];
     setTasks: (newValue: TodoItem[]) => void
 }
 
-export default function TodoList ({ setTasks, tasks }: TodoListProps) {
+export default function TodoList ({ setTasks, tasks}: TodoListProps) {
 
     const [isDone, setIsDone] = useState<TodoItem[]>([])
     useEffect (() => {

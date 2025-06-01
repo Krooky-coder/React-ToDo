@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent} from 'react';
-import { type TodoItem } from '../App.tsx'
+import { type TodoItem } from './TodoItem'
 interface AddTodoProps {
     onAdd: (task: TodoItem) => void
 }
