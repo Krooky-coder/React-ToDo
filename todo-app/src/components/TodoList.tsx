@@ -15,6 +15,7 @@ export default function TodoList ({ setTasks, tasks, setValue }: TodoListProps) 
         const newDone = [...tasks];
         newDone[index].status = !newDone[index].status;
         setValue(newDone)
+        setTasks(newDone)
     }
     
     const handleClickDelete = (index: number) => {
