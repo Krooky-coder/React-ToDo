@@ -23,8 +23,8 @@ function App() {
   return (
     <div>
       <AddTodo onAdd={handleAddTask}/>
-      <TodoList tasks={value} setValue={setValue} setTasks={setTasks}>
-        <EditTodo />
+      <TodoList setValue={setValue}>
+        {(props) => <EditTodo {...props} />}
       </TodoList>
     </div>
   ) 

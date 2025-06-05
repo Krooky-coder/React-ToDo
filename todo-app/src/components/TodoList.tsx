@@ -1,15 +1,17 @@
-import React, { cloneElement } from 'react';
-import useLocalStorage from '../utils/localStorage';
+import React from 'react';
 import { type TodoItem } from './TodoItem'
+
 interface TodoListProps {
+    tasks: TodoItem[];
+    setTasks: (newValue: TodoItem[]) => void
     setValue: (newValue: TodoItem[]) => void
-    children: (props: { index: number }) => React.ReactNode;
+    children: (props: { index: number, setValue: (newValue: TodoItem[]) => void }) => React.ReactNode;
 }
 
-export default function TodoList ({setValue, children}: TodoListProps) {
+export default function TodoList ({ setTasks, tasks, setValue }: TodoListProps) {
 
-    const [tasks, setTasks] = useLocalStorage<TodoItem[]>('Tasks', [])
-    
+
+
     const handleClickSetDone = (index: number) => {
         const newDone = [...tasks];
         newDone[index].status = !newDone[index].status;
@@ -24,17 +26,15 @@ export default function TodoList ({setValue, children}: TodoListProps) {
         setValue(newTasks)
     }
 
-    return (
-        <ul>
-            {tasks.map((item: TodoItem, index: number) => (
-            <li key={index}>
-                <span>{item.text}</span>
-                <button id={`button-${index}`} onClick={() => handleClickSetDone(index)}>
-                    {item.status ?  '✅' :  '❌'}
+    const taskList = tasks.map((item: TodoItem, index: number) => {
+        return (
+            <li>
+                <button id={`${index}`} onClick={() => handleClickSetDone(index)}>
+                    {item.status ? item.text + ' ✅' : item.text + ' ❌'}
                 </button>
                 
                 <button  onClick={() => handleClickDelete(index)}>deleate</button>
-                {cloneElement(children, { index: index })}
+                {children({ index, setValue })}
             </li>
             ))}
         </ul>
