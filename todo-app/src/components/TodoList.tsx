@@ -1,16 +1,15 @@
-import { Children, useEffect, useState } from "react";
+import React from 'react';
+import useLocalStorage from '../utils/localStorage';
 import { type TodoItem } from './TodoItem'
-
 interface TodoListProps {
-    tasks: TodoItem[];
-    setTasks: (newValue: TodoItem[]) => void
     setValue: (newValue: TodoItem[]) => void
+    children: (props: { index: number, setValue: (newValue: TodoItem[]) => void }) => React.ReactNode;
 }
 
-export default function TodoList ({ setTasks, tasks, setValue }: TodoListProps) {
+export default function TodoList ({setValue, children}: TodoListProps) {
 
-
-
+    const [tasks, setTasks] = useLocalStorage<TodoItem[]>('Tasks', [])
+    
     const handleClickSetDone = (index: number) => {
         const newDone = [...tasks];
         newDone[index].status = !newDone[index].status;
@@ -25,20 +24,19 @@ export default function TodoList ({ setTasks, tasks, setValue }: TodoListProps) 
         setValue(newTasks)
     }
 
-    const taskList = tasks.map((item: TodoItem, index: number) => {
-        return (
-            <li>
-                <button id={`${index}`} onClick={() => handleClickSetDone(index)}>
-                    {item.status ? item.text + ' ✅' : item.text + ' ❌'}
-                </button>
-                
-                <button  onClick={() => handleClickDelete(index)}>удалить</button>
-            </li>)
-    })
-
     return (
         <ul>
-            {taskList}
+            {tasks.map((item: TodoItem, index: number) => (
+            <li key={index}>
+                <span>{item.text}</span>
+                <button id={`button-${index}`} onClick={() => handleClickSetDone(index)}>
+                    {item.status ?  '✅' :  '❌'}
+                </button>
+                
+                <button  onClick={() => handleClickDelete(index)}>deleate</button>
+                {children({ index, setValue })}
+            </li>
+            ))}
         </ul>
     )
 }
