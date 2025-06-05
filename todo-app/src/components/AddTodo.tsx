@@ -1,5 +1,6 @@
 import { useState, type ChangeEvent} from 'react';
 import { type TodoItem } from './TodoItem'
+import useLocalStorage from '../utils/localStorage';
 interface AddTodoProps {
     onAdd: (task: TodoItem) => void
 }
@@ -7,7 +8,7 @@ interface AddTodoProps {
 export default function AddTodo ({ onAdd }: AddTodoProps) {
 
     const [inputValue, setInputValue] = useState('')
-    
+  
     function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
         setInputValue(e.target.value)
     }

@@ -9,21 +9,19 @@ function App() {
 
 
   const [tasks, setTasks] = useLocalStorage<TodoItem[]>('Tasks', []);
-  const [value, setValue] = useState(tasks)
 
   const handleAddTask = (task: TodoItem) => {
     setTasks([...tasks, task])
-    setValue([...tasks, task]);
   };
 
   useEffect(() => {
-    setTasks(value)
-  }, [value]);
+    // setTasks(value)
+  }, [tasks]);
 
   return (
     <div>
       <AddTodo onAdd={handleAddTask}/>
-      <TodoList setValue={setValue}>
+      <TodoList setValue={setTasks}>
         {(props) => <EditTodo {...props} />}
       </TodoList>
     </div>
