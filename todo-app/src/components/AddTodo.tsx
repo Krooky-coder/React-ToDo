@@ -31,6 +31,6 @@ export default function AddTodo ({ onAdd }: AddTodoProps) {
                 type="text"
                 placeholder="Введите данные"
             />
-            <button onClick={handleOnClick} >add</button>
+            <button onClick={handleOnClick} >Добавить</button>
         </div>
 )}

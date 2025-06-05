@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { cloneElement } from 'react';
 import useLocalStorage from '../utils/localStorage';
 import { type TodoItem } from './TodoItem'
 interface TodoListProps {
     setValue: (newValue: TodoItem[]) => void
-    children: (props: { index: number, setValue: (newValue: TodoItem[]) => void }) => React.ReactNode;
+    children: (props: { index: number }) => React.ReactNode;
 }
 
 export default function TodoList ({setValue, children}: TodoListProps) {
@@ -34,7 +34,7 @@ export default function TodoList ({setValue, children}: TodoListProps) {
                 </button>
                 
                 <button  onClick={() => handleClickDelete(index)}>deleate</button>
-                {children({ index, setValue })}
+                {cloneElement(children, { index: index })}
             </li>
             ))}
         </ul>
