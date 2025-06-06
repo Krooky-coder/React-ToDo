@@ -2,8 +2,6 @@ import useLocalStorage from "../utils/localStorage"
 import { type TodoItem } from './TodoItem'
 import { useEffect, useState, type ChangeEvent} from "react"
 
-
-
 export interface EditProps {
     index: number
     setValue: (newValue: TodoItem[]) => void

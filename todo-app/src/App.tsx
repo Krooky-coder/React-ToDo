@@ -1,14 +1,14 @@
 import AddTodo from './components/AddTodo'
 import './App.css'
 import useLocalStorage from './utils/localStorage';
-import { useEffect } from 'react';
 import TodoList from './components/TodoList';
 import { type TodoItem } from './components/TodoItem'
 import EditTodo from './components/EditTodo';
 import ThemeChange from './components/ThemeChange';
 import { ThemeProvider } from 'styled-components';
 import { blackTheme, lightTheme } from './utils/Theme';
-ThemeProvider
+
+
 function App() {
 
   const [tasks, setTasks] = useLocalStorage<TodoItem[]>('Tasks', []);
@@ -19,10 +19,6 @@ function App() {
   const handleAddTask = (task: TodoItem) => {
     setTasks([...tasks, task])
   };
-
-  useEffect (() => {
-
-  },[theme])
 
   return (
     <>
