@@ -9,10 +9,9 @@ export interface EditProps {
     setValue: (newValue: TodoItem[]) => void
 }
 
-export default function EditTodo ({index, setValue}: EditProps) {
+export default function EditTodo ({ index, setValue }: EditProps) {
 
     const [tasks, setTasks] = useLocalStorage<TodoItem[]>('Tasks', [])
-    
     const [valueInput, setInputValue] = useState(tasks[index]?.text || '')
     const [isEditing, setIsEditing] = useState(false)
     useEffect(() => {
@@ -28,11 +27,12 @@ export default function EditTodo ({index, setValue}: EditProps) {
     }
 
     const handleClickSave = () => {
-        if (valueInput.trim()) {
+        if (valueInput) {
             const editTasks = [...tasks] 
             editTasks[index].text = valueInput
             setTasks(editTasks)
             setValue(editTasks)
+
         }
         setIsEditing(false)
     }
