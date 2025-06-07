@@ -7,6 +7,7 @@ import EditTodo from './components/EditTodo';
 import ThemeChange from './components/ThemeChange';
 import { ThemeProvider } from 'styled-components';
 import { blackTheme, lightTheme } from './utils/Theme';
+import { useEffect } from 'react';
 
 
 function App() {
@@ -15,6 +16,10 @@ function App() {
   const [theme, setTheme] = useLocalStorage<string>('Theme', 'light')
 
   const themeToProvide = theme === 'light' ? lightTheme : blackTheme
+
+  useEffect(() =>{
+
+  },[tasks])
 
   const handleAddTask = (task: TodoItem) => {
     setTasks([...tasks, task])

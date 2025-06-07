@@ -1,10 +1,10 @@
 import { useState, type ChangeEvent} from 'react';
 import { type TodoItem } from './TodoItem'
 import styled, { useTheme } from 'styled-components';
+
 interface AddTodoProps {
     onAdd: (task: TodoItem) => void
 }
-
 
 const Button = styled.button`
 font-size: 1em;
