@@ -1,6 +1,6 @@
 import useLocalStorage from "../utils/localStorage"
 import { type TodoItem } from './TodoItem'
-import { useEffect, useState, type ChangeEvent} from "react"
+import { useEffect, useState, type ChangeEvent, type MouseEvent} from "react"
 
 export interface EditProps {
     index: number
@@ -9,18 +9,19 @@ export interface EditProps {
 
 export default function EditTodo ({ index, setValue }: EditProps) {
 
-    const [tasks, setTasks] = useLocalStorage<TodoItem[]>('Tasks', [])
-    const [valueInput, setInputValue] = useState(tasks[index]?.text || '')
+    const [tasks, _] = useLocalStorage<TodoItem[]>('Tasks', [])
+    const [valueInput, setInputValue] = useState(tasks[index].text || '')
     const [isEditing, setIsEditing] = useState(false)
     useEffect(() => {
 
-    }, [])
+    }, [tasks])
 
     const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value)
     }
 
-    const handleClickEdit = () => {
+    const handleClickEdit = (e: MouseEvent<HTMLButtonElement>) => {
+        setInputValue(tasks[index].text)
         setIsEditing(true)
     }
 
@@ -28,7 +29,6 @@ export default function EditTodo ({ index, setValue }: EditProps) {
         if (valueInput) {
             const editTasks = [...tasks] 
             editTasks[index].text = valueInput
-            setTasks(editTasks)
             setValue(editTasks)
 
         }
