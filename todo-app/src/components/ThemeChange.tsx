@@ -14,7 +14,7 @@ export default function ThemeChange ( {setTheme}: ThemeChangeProps ) {
 
     return (
         <button onClick={handleToggleTheme}>
-            Переключить
+            toggle
         </button>
     )
 }

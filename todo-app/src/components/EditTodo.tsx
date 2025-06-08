@@ -1,6 +1,6 @@
 import useLocalStorage from "../utils/localStorage"
 import { type TodoItem } from './TodoItem'
-import { useEffect, useState, type ChangeEvent, type MouseEvent} from "react"
+import { useEffect, useState, type ChangeEvent} from "react"
 
 export interface EditProps {
     index: number
@@ -20,7 +20,7 @@ export default function EditTodo ({ index, setValue }: EditProps) {
         setInputValue(e.target.value)
     }
 
-    const handleClickEdit = (e: MouseEvent<HTMLButtonElement>) => {
+    const handleClickEdit = () => {
         setInputValue(tasks[index].text)
         setIsEditing(true)
     }

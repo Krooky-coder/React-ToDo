@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { type TodoItem } from './TodoItem'
 import useLocalStorage from '../utils/localStorage';
 

@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent} from 'react';
 import { type TodoItem } from './TodoItem'
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import useLocalStorage from '../utils/localStorage';
 
 interface AddTodoProps {
@@ -28,16 +28,16 @@ export default function AddTodo ({ setValue }: AddTodoProps) {
 
     const [inputValue, setInputValue] = useState('')
     const [onError, setOnError] = useState(false)
-    const [sort, setSort] = useLocalStorage('SortType', 'Новые')
+    const [sort, _t] = useLocalStorage('SortType', 'Новые')
     const [tasks, _] = useLocalStorage('Tasks', [])
+
     function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
         setInputValue(e.target.value)
     }
 
     function handleOnClick () {
         if (inputValue) {
-            setOnError(false)
-            
+            setOnError(false)  
             if (sort === 'Новые') {
                 setValue([{
                     text: inputValue,
@@ -61,10 +61,7 @@ export default function AddTodo ({ setValue }: AddTodoProps) {
 
     return (
         <div>
-            <div>
-            <span>СОСАЛ?</span>
-            {onError && <span>Да</span>}
-            </div>
+            <div>{onError && <span>ОШИБКА: ВВЕДИТЕ ЗНАЧЕНИЕ</span>}</div>
             <Container>
                 <input
                     value={inputValue}
@@ -72,7 +69,7 @@ export default function AddTodo ({ setValue }: AddTodoProps) {
                     type="text"
                     placeholder="Введите данные"
                 />
-                <Button onClick={handleOnClick} >Добавить</Button>
+                <Button onClick={handleOnClick}>Добавить</Button>
             </Container>
         </div>
     )
