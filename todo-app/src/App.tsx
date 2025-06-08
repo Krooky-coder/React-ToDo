@@ -32,7 +32,7 @@ function App() {
     <>
       <ThemeProvider theme={themeToProvide}>
         <ThemeChange setTheme={setTheme} />
-        <AddTodo onAddNew={handleAddTaskNew} onAddOld={handleAddTaskOld}/>
+        <AddTodo setValue={setTasks}/>
         <TodoList setValue={setTasks}>
           {(props) => <EditTodo {...props} />}
         </TodoList>

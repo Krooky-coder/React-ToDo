@@ -4,8 +4,7 @@ import styled, { useTheme } from 'styled-components';
 import useLocalStorage from '../utils/localStorage';
 
 interface AddTodoProps {
-    onAddNew: (task: TodoItem) => void
-    onAddOld: (task: TodoItem) => void
+    setValue: (newValue: TodoItem[]) => void
 }
 
 const Button = styled.button`
@@ -25,45 +24,38 @@ background-color: ${props => props.theme.colors.background};
 color: ${props => props.theme.colors.text};
 `;
 
-export default function AddTodo ({ onAddNew, onAddOld }: AddTodoProps) {
+export default function AddTodo ({ setValue }: AddTodoProps) {
 
     const [inputValue, setInputValue] = useState('')
     const [onError, setOnError] = useState(false)
     const [sort, setSort] = useLocalStorage('SortType', 'Новые')
-
+    const [tasks, _] = useLocalStorage('Tasks', [])
     function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
         setInputValue(e.target.value)
     }
 
     function handleOnClick () {
-        if (sort === 'Новые' ) {
-            if (inputValue) {
-                setOnError(false)
-                onAddNew({
+        if (inputValue) {
+            setOnError(false)
+            
+            if (sort === 'Новые') {
+                setValue([{
                     text: inputValue,
                     status: false,
                     date: new Date()
-                })
-                setInputValue('')
+                }, ...tasks])
             }
             else {
-                setOnError(true)
+                setValue([...tasks, {
+                    text: inputValue,
+                    status: false,
+                    date: new Date()
+                }])
             }
+            setInputValue('')           
         }
-        else  {
-            if (inputValue) {
-                setOnError(false)
-                onAddOld({
-                    text: inputValue,
-                    status: false,
-                    date: new Date()
-                })
-                setInputValue('')
-            }
-            else {
-                setOnError(true)
-            }
-
+        else {
+            setOnError(true)
         }
     }
 
