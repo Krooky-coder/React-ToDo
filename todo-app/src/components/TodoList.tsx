@@ -10,11 +10,10 @@ interface TodoListProps {
 export default function TodoList ({ setValue, children }: TodoListProps) {
 
     const [tasks, _] = useLocalStorage<TodoItem[]>('Tasks', []);
-
-    const [sort, setSort] = useState('Новые')
+    const [sort, setSort] = useLocalStorage<'Новые'|'Старые'>('SortType', 'Новые')
 
     useEffect(() => {
-        
+              
     },[tasks])
 
     const handleClickSetDone = (index: number) => {
@@ -29,23 +28,21 @@ export default function TodoList ({ setValue, children }: TodoListProps) {
         setValue(newTasks)
     }
 
+    const compareFn = (a: TodoItem, b: TodoItem) => {
+                
+        const timeA = new Date(a.date).getTime()
+        const timeB = new Date(b.date).getTime()
+
+        return timeA > timeB ? timeB - timeA : timeA - timeB  
+    };
+
     const handleClickSort = () => {
+        setSort(sort === 'Новые' ? 'Старые' : 'Новые')
         const newDone = [...tasks]
-        const compareFn = (a: TodoItem, b: TodoItem) => {
-                    
-            const timeA = new Date(a.date).getTime()
-            const timeB = new Date(b.date).getTime()
-            if (timeA > timeB) {
-                setSort('Старые')
-            }
-            else {
-                setSort('Новые')
-            }
-            return timeA > timeB ? timeB - timeA : timeA - timeB  
-        };
         newDone.sort(compareFn)
         setValue(newDone)
     } 
+    
 
         return (
         <>  

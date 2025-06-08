@@ -21,15 +21,18 @@ function App() {
 
   },[tasks])
 
-  const handleAddTask = (task: TodoItem) => {
+  const handleAddTaskNew = (task: TodoItem) => {
+    setTasks([task, ...tasks])
+  };
+  const handleAddTaskOld = (task: TodoItem) => {
     setTasks([...tasks, task])
   };
-
+  
   return (
     <>
       <ThemeProvider theme={themeToProvide}>
         <ThemeChange setTheme={setTheme} />
-        <AddTodo onAdd={handleAddTask}/>
+        <AddTodo onAddNew={handleAddTaskNew} onAddOld={handleAddTaskOld}/>
         <TodoList setValue={setTasks}>
           {(props) => <EditTodo {...props} />}
         </TodoList>

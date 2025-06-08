@@ -1,9 +1,11 @@
 import { useState, type ChangeEvent} from 'react';
 import { type TodoItem } from './TodoItem'
 import styled, { useTheme } from 'styled-components';
+import useLocalStorage from '../utils/localStorage';
 
 interface AddTodoProps {
-    onAdd: (task: TodoItem) => void
+    onAddNew: (task: TodoItem) => void
+    onAddOld: (task: TodoItem) => void
 }
 
 const Button = styled.button`
@@ -23,27 +25,45 @@ background-color: ${props => props.theme.colors.background};
 color: ${props => props.theme.colors.text};
 `;
 
-export default function AddTodo ({ onAdd }: AddTodoProps) {
+export default function AddTodo ({ onAddNew, onAddOld }: AddTodoProps) {
 
     const [inputValue, setInputValue] = useState('')
     const [onError, setOnError] = useState(false)
+    const [sort, setSort] = useLocalStorage('SortType', 'Новые')
 
     function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
         setInputValue(e.target.value)
     }
 
     function handleOnClick () {
-        if (inputValue) {
-            setOnError(false)
-            onAdd({
-                text: inputValue,
-                status: false,
-                date: new Date()
-            })
-            setInputValue('')
+        if (sort === 'Новые' ) {
+            if (inputValue) {
+                setOnError(false)
+                onAddNew({
+                    text: inputValue,
+                    status: false,
+                    date: new Date()
+                })
+                setInputValue('')
+            }
+            else {
+                setOnError(true)
+            }
         }
-        else {
-            setOnError(true)
+        else  {
+            if (inputValue) {
+                setOnError(false)
+                onAddOld({
+                    text: inputValue,
+                    status: false,
+                    date: new Date()
+                })
+                setInputValue('')
+            }
+            else {
+                setOnError(true)
+            }
+
         }
     }
 
