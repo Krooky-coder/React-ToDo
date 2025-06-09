@@ -8,7 +8,6 @@ const HeaderDiv = styled.div`
 
 export default function Header () {
 
-
     return (
     <HeaderDiv>
         <span>YouR's ToDo</span>

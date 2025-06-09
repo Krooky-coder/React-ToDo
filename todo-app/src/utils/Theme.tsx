@@ -1,13 +1,3 @@
-declare module 'styled-components' {
-    export interface DefaultTheme {
-      main: string,
-      colors: {
-        primary?: string,
-        secondary?: string,
-        text: string,
-        background: string,
-  },
-}}
 interface DefaultTheme {
   main: string,
   colors: {
@@ -27,6 +17,7 @@ export const lightTheme: DefaultTheme  = {
         background: 'pink',
     }
 }
+
 export const blackTheme: DefaultTheme = {
   main: 'green',
   colors: {

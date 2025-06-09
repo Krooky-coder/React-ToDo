@@ -18,6 +18,7 @@ const Button = styled.button`
     border: 2px solid ${props => props.theme.main};
     background: ${props => props.theme.colors.primary};
 `;
+
 const ContainerSort = styled.div`
     display: flex;
     justify-content: center;

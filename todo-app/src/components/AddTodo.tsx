@@ -3,10 +3,6 @@ import { type TodoItem } from './TodoItem'
 import styled from 'styled-components';
 import useLocalStorage from '../utils/localStorage';
 
-interface AddTodoProps {
-    setValue: (newValue: TodoItem[]) => void
-}
-
 const Button = styled.button`
     font-size: 1em;
     margin: 1em;
@@ -16,15 +12,6 @@ const Button = styled.button`
     color: ${props => props.theme.colors.text};
     border: 2px solid ${props => props.theme.main};
     background: ${props => props.theme.colors.primary};
-`;
-const SpanError = styled.span`
-    color: ${props => props.theme.colors.secondary}  
-`
-const Container = styled.div`
-    min-height: 100px;
-    margin-top: 20px;
-    background-color: ${props => props.theme.colors.background};
-    color: ${props => props.theme.colors.text};
 `;
 
 const CustomInput = styled.input`
@@ -37,13 +24,26 @@ const CustomInput = styled.input`
     color: ${props => props.theme.colors.text};
 `
 
+interface AddTodoProps {
+    setValue: (newValue: TodoItem[]) => void
+}
+
+const SpanError = styled.span`
+    color: ${props => props.theme.colors.secondary}  
+`
+const Container = styled.div`
+    min-height: 100px;
+    margin-top: 20px;
+    background-color: ${props => props.theme.colors.background};
+    color: ${props => props.theme.colors.text};
+`;
 
 export default function AddTodo ({ setValue }: AddTodoProps) {
 
-    const [inputValue, setInputValue] = useState('')
-    const [onError, setOnError] = useState(false)
-    const [sort, _t] = useLocalStorage('SortType', 'new')
-    const [tasks, _] = useLocalStorage('Tasks', [])
+    const [inputValue, setInputValue] = useState<string>('')
+    const [onError, setOnError] = useState<boolean>(false)
+    const [sort, __] = useLocalStorage<'new' | 'old'>('SortType', 'new')
+    const [tasks, _] = useLocalStorage<TodoItem[]>('Tasks', [])
 
     function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
         setInputValue(e.target.value)
@@ -80,8 +80,8 @@ export default function AddTodo ({ setValue }: AddTodoProps) {
                 onChange={handleOnChange}
                 type="text"
                 placeholder="Введите данные" />
-            <Button onClick={handleOnClick}>Добавить</Button>
-            <div>{onError && <SpanError>ОШИБКА: ВВЕДИТЕ ЗНАЧЕНИЕ</SpanError>}</div>
+            <Button onClick={handleOnClick}>ADD</Button>
+            <div>{onError && <SpanError>ERROR: EMPTY INPUT</SpanError>}</div>
         </Container>
     )
 }
