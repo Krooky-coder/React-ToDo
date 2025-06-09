@@ -25,6 +25,14 @@ const ContainerSort = styled.div`
     gap: 10px;
 `
 
+interface ListSpanProps {
+  status: boolean;
+}
+
+const ListSpan = styled.span<ListSpanProps>`
+    text-decoration: ${props => props.status ? 'line-through' : 'none'}
+`
+
 export default function TodoList ({ setValue, children }: TodoListProps) {
 
     const [tasks, _] = useLocalStorage<TodoItem[]>('Tasks', []);
@@ -71,7 +79,7 @@ export default function TodoList ({ setValue, children }: TodoListProps) {
             <ul>
                 {tasks.map((item: TodoItem, index: number) =>
                 <li>
-                    <span>{item.text}</span>
+                    <ListSpan status={item.status}>{item.text}</ListSpan>
                     <Button id={`${index}`} onClick={() => handleClickSetDone(index)}>
                         {item.status ? '✅' : '❌'}
                     </Button>
