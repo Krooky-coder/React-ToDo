@@ -1,3 +1,4 @@
+import styled from "styled-components"
 import useLocalStorage from "../utils/localStorage"
 import { type TodoItem } from './TodoItem'
 import { useEffect, useState, type ChangeEvent} from "react"
@@ -6,6 +7,26 @@ export interface EditProps {
     index: number
     setValue: (newValue: TodoItem[]) => void
 }
+const Button = styled.button`
+    font-size: 1em;
+    margin: 1em;
+    padding: 0.25em 1em;
+    border-radius: 5px;
+    /* Color the border and text with theme.main */
+    color: ${props => props.theme.colors.text};
+    border: 2px solid ${props => props.theme.main};
+    background: ${props => props.theme.colors.primary};
+`;
+const CustomInput = styled.input`
+    background: ${props => props.theme.colors.primary};
+    padding: 10px 12px;
+    border: 2px solid ${props => props.theme.main};
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: "Rubik Bubbles", system-ui;
+    color: ${props => props.theme.colors.text};
+`
+
 
 export default function EditTodo ({ index, setValue }: EditProps) {
 
@@ -39,16 +60,16 @@ export default function EditTodo ({ index, setValue }: EditProps) {
         <>
             {isEditing ? (
                 <>
-                    <input 
+                    <CustomInput 
                         name="editInput"
                         value={valueInput}
                         onChange={handleOnChange}
                         type="text"
                     />
-                    <button onClick={handleClickSave}>Save</button>
+                    <Button onClick={handleClickSave}>Save</Button>
                 </>
             ) : (
-            <button onClick={handleClickEdit}>edit</button>
+            <Button onClick={handleClickEdit}>edit</Button>
             )}
         </>
     )

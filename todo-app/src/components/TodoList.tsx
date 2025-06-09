@@ -1,16 +1,34 @@
 import React, { useEffect } from 'react';
 import { type TodoItem } from './TodoItem'
 import useLocalStorage from '../utils/localStorage';
+import styled from 'styled-components';
 
 interface TodoListProps {
     setValue: (newValue: TodoItem[]) => void
     children: (props: { index: number, setValue: (newValue: TodoItem[]) => void }) => React.ReactNode;
 }
 
+const Button = styled.button`
+    font-size: 1em;
+    margin: 1em;
+    padding: 0.25em 1em;
+    border-radius: 5px;
+    /* Color the border and text with theme.main */
+    color: ${props => props.theme.colors.text};
+    border: 2px solid ${props => props.theme.main};
+    background: ${props => props.theme.colors.primary};
+`;
+const ContainerSort = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+`
+
 export default function TodoList ({ setValue, children }: TodoListProps) {
 
     const [tasks, _] = useLocalStorage<TodoItem[]>('Tasks', []);
-    const [sort, setSort] = useLocalStorage<'Новые'|'Старые'>('SortType', 'Новые')
+    const [sort, setSort] = useLocalStorage<'new'|'old'>('SortType', 'new')
 
     useEffect(() => {
               
@@ -37,7 +55,7 @@ export default function TodoList ({ setValue, children }: TodoListProps) {
     };
 
     const handleClickSort = () => {
-        setSort(sort === 'Новые' ? 'Старые' : 'Новые')
+        setSort(sort === 'new' ? 'old' : 'new')
         const newDone = [...tasks]
         newDone.sort(compareFn)
         setValue(newDone)
@@ -46,17 +64,19 @@ export default function TodoList ({ setValue, children }: TodoListProps) {
 
         return (
         <>  
-            {tasks.length === 0 ? null : <><span>сортировка: {sort}</span> 
-            <button onClick={handleClickSort}>⏰</button></>}
+            <ContainerSort>
+                {tasks.length === 0 ? null : <><span>Sort: {sort}</span> 
+                <Button onClick={handleClickSort}>⏰</Button></>}
+            </ContainerSort>
             <ul>
                 {tasks.map((item: TodoItem, index: number) =>
                 <li>
                     <span>{item.text}</span>
-                    <button id={`${index}`} onClick={() => handleClickSetDone(index)}>
+                    <Button id={`${index}`} onClick={() => handleClickSetDone(index)}>
                         {item.status ? '✅' : '❌'}
-                    </button>
+                    </Button>
                     
-                    <button  onClick={() => handleClickDelete(index)}>deleate</button>
+                    <Button  onClick={() => handleClickDelete(index)}>deleate</Button>
                     {children({ index, setValue })}
                 </li>
                 )}

@@ -8,27 +8,41 @@ interface AddTodoProps {
 }
 
 const Button = styled.button`
-font-size: 1em;
-margin: 1em;
-padding: 0.25em 1em;
-border-radius: 3px;
-
-/* Color the border and text with theme.main */
-color: ${props => props.theme.main};
-border: 2px solid ${props => props.theme.main};
+    font-size: 1em;
+    margin: 1em;
+    padding: 0.25em 1em;
+    border-radius: 5px;
+    /* Color the border and text with theme.main */
+    color: ${props => props.theme.colors.text};
+    border: 2px solid ${props => props.theme.main};
+    background: ${props => props.theme.colors.primary};
 `;
-
+const SpanError = styled.span`
+    color: ${props => props.theme.colors.secondary}  
+`
 const Container = styled.div`
-padding: 20px;
-background-color: ${props => props.theme.colors.background};
-color: ${props => props.theme.colors.text};
+    min-height: 100px;
+    margin-top: 20px;
+    background-color: ${props => props.theme.colors.background};
+    color: ${props => props.theme.colors.text};
 `;
+
+const CustomInput = styled.input`
+    background: ${props => props.theme.colors.primary};
+    padding: 10px 12px;
+    border: 2px solid ${props => props.theme.main};
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: "Rubik Bubbles", system-ui;
+    color: ${props => props.theme.colors.text};
+`
+
 
 export default function AddTodo ({ setValue }: AddTodoProps) {
 
     const [inputValue, setInputValue] = useState('')
     const [onError, setOnError] = useState(false)
-    const [sort, _t] = useLocalStorage('SortType', 'Новые')
+    const [sort, _t] = useLocalStorage('SortType', 'new')
     const [tasks, _] = useLocalStorage('Tasks', [])
 
     function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
@@ -38,7 +52,7 @@ export default function AddTodo ({ setValue }: AddTodoProps) {
     function handleOnClick () {
         if (inputValue) {
             setOnError(false)  
-            if (sort === 'Новые') {
+            if (sort === 'new') {
                 setValue([{
                     text: inputValue,
                     status: false,
@@ -60,17 +74,14 @@ export default function AddTodo ({ setValue }: AddTodoProps) {
     }
 
     return (
-        <div>
-            <div>{onError && <span>ОШИБКА: ВВЕДИТЕ ЗНАЧЕНИЕ</span>}</div>
-            <Container>
-                <input
-                    value={inputValue}
-                    onChange={handleOnChange}
-                    type="text"
-                    placeholder="Введите данные"
-                />
-                <Button onClick={handleOnClick}>Добавить</Button>
-            </Container>
-        </div>
+        <Container>
+            <CustomInput
+                value={inputValue}
+                onChange={handleOnChange}
+                type="text"
+                placeholder="Введите данные" />
+            <Button onClick={handleOnClick}>Добавить</Button>
+            <div>{onError && <SpanError>ОШИБКА: ВВЕДИТЕ ЗНАЧЕНИЕ</SpanError>}</div>
+        </Container>
     )
 }

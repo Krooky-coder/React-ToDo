@@ -5,9 +5,19 @@ import TodoList from './components/TodoList';
 import { type TodoItem } from './components/TodoItem'
 import EditTodo from './components/EditTodo';
 import ThemeChange from './components/ThemeChange';
-import { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { blackTheme, lightTheme } from './utils/Theme';
+import Header from './components/Header';
 
+const Container = styled.div`
+  border: 2px solid ${props => props.theme.main};
+  border-radius: 15px;
+  background: ${props => props.theme.colors.background};
+  padding: 0px;
+  margin: 0px;
+  width: 60%;
+  color: ${props => props.theme.colors.text};
+`
 
 function App() {
 
@@ -18,11 +28,14 @@ function App() {
   return (
     <>
       <ThemeProvider theme={themeToProvide}>
-        <ThemeChange setTheme={setTheme} />
-        <AddTodo setValue={setTasks}/>
-        <TodoList setValue={setTasks}>
-          {(props) => <EditTodo {...props} />}
-        </TodoList>
+        <Container>
+          <ThemeChange setTheme={setTheme} />
+          <Header />
+          <AddTodo setValue={setTasks}/>
+            <TodoList setValue={setTasks}>
+              {(props) => <EditTodo {...props} />}
+            </TodoList>
+        </Container>
       </ThemeProvider>
     </>
   ) 

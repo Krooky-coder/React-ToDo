@@ -1,6 +1,6 @@
 declare module 'styled-components' {
     export interface DefaultTheme {
-      main: string
+      main: string,
       colors: {
         primary?: string,
         secondary?: string,
@@ -9,7 +9,7 @@ declare module 'styled-components' {
   },
 }}
 interface DefaultTheme {
-  main: string
+  main: string,
   colors: {
     primary?: string,
     secondary?: string,
@@ -19,17 +19,21 @@ interface DefaultTheme {
 }
 
 export const lightTheme: DefaultTheme  = {
-    main: "yellow",
+    main: 'lightBlue',
     colors: {
-        text: 'f5f100',
-        background: 'pink'
+        text: 'black',
+        primary: 'white',
+        secondary: 'darkRed',
+        background: 'pink',
     }
 }
 export const blackTheme: DefaultTheme = {
-  main: "mediumseagreen",
+  main: 'green',
   colors: {
-        text: 'green',
-        background: 'blue'
+        text: 'white',
+        background: 'black',
+        primary: 'darkBlue',
+        secondary: 'darkRed',
     }
 };
 
