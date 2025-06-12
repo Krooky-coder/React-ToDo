@@ -25,7 +25,7 @@ export default function AddTodo ({ setValue }: AddTodoProps) {
         if (inputValue) {
             setOnError(false)  
             const taskToAdd = {
-                id: `${id}-${new Date()}`,
+                id: `${id}-${performance.now()}`,
                 text: inputValue,
                 status: false,
                 date: new Date()

@@ -35,7 +35,6 @@ function App() {
           </Header>
           <AddTodo setValue={setValue}/>
             <TodoList setValue={setValue}>
-              {(props) => <EditTodo {...props} />}
             </TodoList>
         </Container>
       </ThemeProvider>

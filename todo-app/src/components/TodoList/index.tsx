@@ -2,13 +2,13 @@ import React from 'react';
 import  type TodoItem  from '../../TodoItem'
 import useLocalStorage from '../../utils/localStorage';
 import { Button, ContainerSort, ListSpan } from './style'
+import EditTodo from '../EditTodo/index'
 
 interface TodoListProps {
     setValue: (newValue: TodoItem[]) => void
-    children: (props: { index: number, setValue: (newValue: TodoItem[]) => void }) => React.ReactNode;
 }
 
-export default function TodoList ({ setValue, children }: TodoListProps) {
+export default function TodoList ({ setValue }: TodoListProps) {
 
     const tasks = useLocalStorage<TodoItem[]>('Tasks', []).initialValue;
     const { initialValue, setStoredValue} = useLocalStorage<'new'|'old'>('SortType', 'new')
@@ -43,14 +43,17 @@ export default function TodoList ({ setValue, children }: TodoListProps) {
                 <Button onClick={handleClickSort}>⏰</Button></>}
             </ContainerSort>
             <ul>
-                {tasks.map((item: TodoItem, index: number) =>
+                {tasks.map((item: TodoItem) =>
                 <li key={item.id} id={item.id}>
                     <ListSpan $status={item.status}>{item.text}</ListSpan>
                     <Button onClick={() => handleClickSetDone(item.id)}>
                         {item.status ? '✅' : '❌'}
                     </Button>
                     <Button onClick={() => handleClickDelete(item.id)}>delete</Button>
-                    {children({ index, setValue })}
+                    <EditTodo 
+                        itemId={item.id}
+                        setValue={setValue}
+                    />
                 </li>
                 )}
             </ul>

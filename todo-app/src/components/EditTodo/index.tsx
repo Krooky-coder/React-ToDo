@@ -4,15 +4,15 @@ import  type TodoItem  from '../../TodoItem'
 import { useState, type ChangeEvent} from "react"
 
 export interface EditProps {
-    index: number
     setValue: (newValue: TodoItem[]) => void
+    itemId: string
 }
 
 
-export default function EditTodo ({ index, setValue }: EditProps) {
+export default function EditTodo ({ setValue, itemId }: EditProps) {
 
     const { initialValue } = useLocalStorage<TodoItem[]>('Tasks', [])
-    const [valueInput, setInputValue] = useState<string>(initialValue[index].text || '')
+    const [valueInput, setInputValue] = useState<string>('')
     const [isEditing, setIsEditing] = useState<boolean>(false)
 
     const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -20,16 +20,23 @@ export default function EditTodo ({ index, setValue }: EditProps) {
     }
 
     const handleClickEdit = () => {
-        setInputValue(initialValue[index].text)
+        initialValue.forEach ((item, index) => {
+            if (item.id === itemId) {
+                setInputValue(initialValue[index].text)
+            } 
+        })
         setIsEditing(true)
     }
 
     const handleClickSave = () => {
         if (valueInput) {
             const editTasks = [...initialValue] 
-            editTasks[index].text = valueInput
+            editTasks.map((item) => {
+                if (item.id === itemId) {
+                    item.text = valueInput
+                }
+            })
             setValue(editTasks)
-
         }
         setIsEditing(false)
     }
@@ -51,7 +58,4 @@ export default function EditTodo ({ index, setValue }: EditProps) {
             )}
         </>
     )
-
-
-
 }
