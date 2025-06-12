@@ -1,20 +1,16 @@
 import { useId, useState, type ChangeEvent} from 'react';
 import  type TodoItem  from '../../TodoItem'
-import useLocalStorage from '../../utils/localStorage';
 import { Button, CustomInput, SpanError, Container} from './style'
 
 interface AddTodoProps {
+    sort: string,
+    value: TodoItem[]
     setValue: (newValue: TodoItem[]) => void
 }
 
-export default function AddTodo ({ setValue }: AddTodoProps) {
-
+export default function AddTodo ({ setValue, value, sort }: AddTodoProps) {
     const [inputValue, setInputValue] = useState<string>('')
     const [onError, setOnError] = useState<boolean>(false)
-
-    const { initialValue } = useLocalStorage<'new' | 'old'>('SortType', 'new')
-    const tasks = useLocalStorage<TodoItem[]>('Tasks', []).initialValue
-
     const id = useId()
 
     function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
@@ -30,7 +26,7 @@ export default function AddTodo ({ setValue }: AddTodoProps) {
                 status: false,
                 date: new Date()
             }
-            initialValue === 'new' ? setValue([taskToAdd, ...tasks]) : setValue([...tasks, taskToAdd]) 
+            sort === 'new' ? setValue([taskToAdd, ...value]) : setValue([...value, taskToAdd])
             setInputValue('')           
         }
         else {

@@ -1,17 +1,14 @@
 import { Button, CustomInput } from "./style"
-import useLocalStorage from "../../utils/localStorage"
 import  type TodoItem  from '../../TodoItem'
 import { useState, type ChangeEvent} from "react"
 
 export interface EditProps {
+    values: TodoItem[]
     setValue: (newValue: TodoItem[]) => void
     itemId: string
 }
 
-
-export default function EditTodo ({ setValue, itemId }: EditProps) {
-
-    const { initialValue } = useLocalStorage<TodoItem[]>('Tasks', [])
+export default function EditTodo ({ setValue, itemId, values }: EditProps) {
     const [valueInput, setInputValue] = useState<string>('')
     const [isEditing, setIsEditing] = useState<boolean>(false)
 
@@ -20,9 +17,9 @@ export default function EditTodo ({ setValue, itemId }: EditProps) {
     }
 
     const handleClickEdit = () => {
-        initialValue.forEach ((item, index) => {
+        values.forEach ((item, index) => {
             if (item.id === itemId) {
-                setInputValue(initialValue[index].text)
+                setInputValue(values[index].text)
             } 
         })
         setIsEditing(true)
@@ -30,7 +27,7 @@ export default function EditTodo ({ setValue, itemId }: EditProps) {
 
     const handleClickSave = () => {
         if (valueInput) {
-            const editTasks = [...initialValue] 
+            const editTasks = [...values] 
             editTasks.map((item) => {
                 if (item.id === itemId) {
                     item.text = valueInput
