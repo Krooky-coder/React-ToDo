@@ -1,47 +1,17 @@
-import React, { useEffect } from 'react';
-import { type TodoItem } from './TodoItem'
-import useLocalStorage from '../utils/localStorage';
-import styled from 'styled-components';
+import React from 'react';
+import  type TodoItem  from '../../TodoItem'
+import useLocalStorage from '../../utils/localStorage';
+import { Button, ContainerSort, ListSpan } from './style'
 
 interface TodoListProps {
     setValue: (newValue: TodoItem[]) => void
     children: (props: { index: number, setValue: (newValue: TodoItem[]) => void }) => React.ReactNode;
 }
 
-const Button = styled.button`
-    font-size: 1em;
-    margin: 1em;
-    padding: 0.25em 1em;
-    border-radius: 5px;
-    /* Color the border and text with theme.main */
-    color: ${props => props.theme.colors.text};
-    border: 2px solid ${props => props.theme.main};
-    background: ${props => props.theme.colors.primary};
-`;
-
-const ContainerSort = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-`
-
-interface ListSpanProps {
-  status: boolean;
-}
-
-const ListSpan = styled.span<ListSpanProps>`
-    text-decoration: ${props => props.status ? 'line-through' : 'none'}
-`
-
 export default function TodoList ({ setValue, children }: TodoListProps) {
 
-    const [tasks, _] = useLocalStorage<TodoItem[]>('Tasks', []);
-    const [sort, setSort] = useLocalStorage<'new'|'old'>('SortType', 'new')
-
-    useEffect(() => {
-              
-    },[tasks])
+    const tasks = useLocalStorage<TodoItem[]>('Tasks', []).initialValue;
+    const { initialValue, setStoredValue} = useLocalStorage<'new'|'old'>('SortType', 'new')
 
     const handleClickSetDone = (index: number) => {
         const newDone = [...tasks];
@@ -64,17 +34,16 @@ export default function TodoList ({ setValue, children }: TodoListProps) {
     };
 
     const handleClickSort = () => {
-        setSort(sort === 'new' ? 'old' : 'new')
+        setStoredValue(initialValue === 'new' ? 'old' : 'new')
         const newDone = [...tasks]
         newDone.sort(compareFn)
         setValue(newDone)
     } 
     
-
         return (
         <>  
             <ContainerSort>
-                {tasks.length === 0 ? null : <><span>Sort: {sort}</span> 
+                {tasks.length < 2 ? null : <><span>Sort: { initialValue }</span> 
                 <Button onClick={handleClickSort}>⏰</Button></>}
             </ContainerSort>
             <ul>
@@ -85,7 +54,7 @@ export default function TodoList ({ setValue, children }: TodoListProps) {
                         {item.status ? '✅' : '❌'}
                     </Button>
                     
-                    <Button  onClick={() => handleClickDelete(index)}>deleate</Button>
+                    <Button  onClick={() => handleClickDelete(index)}>delete</Button>
                     {children({ index, setValue })}
                 </li>
                 )}

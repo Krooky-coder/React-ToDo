@@ -19,5 +19,7 @@ export default function useLocalStorage<T> (key: string, defaultValue: T) {
       setReactState(defaultValue)
     };
   
-    return [initialValue, setStoredValue, removeValue] as const;
+    return {
+      initialValue, setStoredValue, removeValue
+    }
 }

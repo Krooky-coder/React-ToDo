@@ -1,4 +1,4 @@
-export interface TodoItem {
+export default interface TodoItem {
     text: string;
     status: boolean,
     date: Date,

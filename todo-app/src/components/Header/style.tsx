@@ -6,11 +6,4 @@ const HeaderDiv = styled.div`
       margin-bottom: 50px;
 `
 
-export default function Header () {
-
-    return (
-    <HeaderDiv>
-        <span>YouR's ToDo</span>
-    </HeaderDiv>)
-
-}
+export { HeaderDiv }
