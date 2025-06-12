@@ -1,4 +1,3 @@
-import React from 'react';
 import  type TodoItem  from '../../TodoItem'
 import useLocalStorage from '../../utils/localStorage';
 import { Button, ContainerSort, ListSpan } from './style'
@@ -9,7 +8,6 @@ interface TodoListProps {
 }
 
 export default function TodoList ({ setValue }: TodoListProps) {
-
     const tasks = useLocalStorage<TodoItem[]>('Tasks', []).initialValue;
     const { initialValue, setStoredValue} = useLocalStorage<'new'|'old'>('SortType', 'new')
 
@@ -45,7 +43,7 @@ export default function TodoList ({ setValue }: TodoListProps) {
             <ul>
                 {tasks.map((item: TodoItem) =>
                 <li key={item.id} id={item.id}>
-                    <ListSpan $status={item.status}>{item.text}</ListSpan>
+                    <ListSpan status={item.status}>{item.text}</ListSpan>
                     <Button onClick={() => handleClickSetDone(item.id)}>
                         {item.status ? '✅' : '❌'}
                     </Button>
