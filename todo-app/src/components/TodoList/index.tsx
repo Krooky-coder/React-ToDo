@@ -13,30 +13,26 @@ export default function TodoList ({ setValue, children }: TodoListProps) {
     const tasks = useLocalStorage<TodoItem[]>('Tasks', []).initialValue;
     const { initialValue, setStoredValue} = useLocalStorage<'new'|'old'>('SortType', 'new')
 
-    const handleClickSetDone = (index: number) => {
-        const newDone = [...tasks];
-        newDone[index].status = !newDone[index].status;
-        setValue(newDone)
-    }
-    
-    const handleClickDelete = (index: number) => {
-        const newDone = [...tasks];
-        const newTasks = newDone.filter((_, i) => i !== index);
-        setValue(newTasks)
+    const handleClickSetDone = (itemId: string) => {
+        const newDone = tasks.map(item => 
+            item.id === itemId ? { ...item, status: !item.status } : item
+        );
+        setValue(newDone);
     }
 
-    const compareFn = (a: TodoItem, b: TodoItem) => {
-                
-        const timeA = new Date(a.date).getTime()
-        const timeB = new Date(b.date).getTime()
-
-        return timeA > timeB ? timeB - timeA : timeA - timeB  
-    };
+    const handleClickDelete = (itemId: string) => {
+        const newTasks = tasks.filter(item => item.id !== itemId);
+        setValue(newTasks);
+    }
 
     const handleClickSort = () => {
         setStoredValue(initialValue === 'new' ? 'old' : 'new')
         const newDone = [...tasks]
-        newDone.sort(compareFn)
+        newDone.sort((a: TodoItem, b: TodoItem) => {
+            const timeA = new Date(a.date).getTime()
+            const timeB = new Date(b.date).getTime()
+            return timeA > timeB ? timeB - timeA : timeA - timeB
+        })
         setValue(newDone)
     } 
     
@@ -48,13 +44,12 @@ export default function TodoList ({ setValue, children }: TodoListProps) {
             </ContainerSort>
             <ul>
                 {tasks.map((item: TodoItem, index: number) =>
-                <li>
-                    <ListSpan status={item.status}>{item.text}</ListSpan>
-                    <Button id={`${index}`} onClick={() => handleClickSetDone(index)}>
+                <li key={item.id} id={item.id}>
+                    <ListSpan $status={item.status}>{item.text}</ListSpan>
+                    <Button onClick={() => handleClickSetDone(item.id)}>
                         {item.status ? '✅' : '❌'}
                     </Button>
-                    
-                    <Button  onClick={() => handleClickDelete(index)}>delete</Button>
+                    <Button onClick={() => handleClickDelete(item.id)}>delete</Button>
                     {children({ index, setValue })}
                 </li>
                 )}

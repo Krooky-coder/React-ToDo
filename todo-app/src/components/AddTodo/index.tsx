@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent} from 'react';
+import { useId, useState, type ChangeEvent} from 'react';
 import  type TodoItem  from '../../TodoItem'
 import useLocalStorage from '../../utils/localStorage';
 import { Button, CustomInput, SpanError, Container} from './style'
@@ -15,6 +15,8 @@ export default function AddTodo ({ setValue }: AddTodoProps) {
     const { initialValue } = useLocalStorage<'new' | 'old'>('SortType', 'new')
     const tasks = useLocalStorage<TodoItem[]>('Tasks', []).initialValue
 
+    const id = useId()
+
     function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
         setInputValue(e.target.value)
     }
@@ -22,20 +24,13 @@ export default function AddTodo ({ setValue }: AddTodoProps) {
     function handleOnClick () {
         if (inputValue) {
             setOnError(false)  
-            if (initialValue === 'new') {
-                setValue([{
-                    text: inputValue,
-                    status: false,
-                    date: new Date()
-                }, ...tasks])
+            const taskToAdd = {
+                id: `${id}-${new Date()}`,
+                text: inputValue,
+                status: false,
+                date: new Date()
             }
-            else {
-                setValue([...tasks, {
-                    text: inputValue,
-                    status: false,
-                    date: new Date()
-                }])
-            }
+            initialValue === 'new' ? setValue([taskToAdd, ...tasks]) : setValue([...tasks, taskToAdd]) 
             setInputValue('')           
         }
         else {
@@ -49,7 +44,8 @@ export default function AddTodo ({ setValue }: AddTodoProps) {
                 value={inputValue}
                 onChange={handleOnChange}
                 type="text"
-                placeholder="Введите данные" />
+                placeholder="Введите данные" 
+            />
             <Button onClick={handleOnClick}>ADD</Button>
             <div>{onError && <SpanError>ERROR: EMPTY INPUT</SpanError>}</div>
         </Container>

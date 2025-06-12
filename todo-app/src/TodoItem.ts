@@ -1,5 +1,6 @@
 export default interface TodoItem {
-    text: string;
+    id: string,
+    text: string,
     status: boolean,
     date: Date,
   }

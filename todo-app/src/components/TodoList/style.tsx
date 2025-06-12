@@ -19,11 +19,11 @@ const ContainerSort = styled.div`
 `
 
 interface ListSpanProps {
-    status: boolean;
+    $status: boolean;
 }
 
 const ListSpan = styled.span<ListSpanProps>`
-    text-decoration: ${props => props.status ? 'line-through' : 'none'}
+    text-decoration: ${props => props.$status ? 'line-through' : 'none'}
 `
 
 export { Button, ContainerSort, ListSpan }
