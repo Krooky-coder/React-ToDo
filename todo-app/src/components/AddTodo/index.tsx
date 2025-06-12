@@ -4,11 +4,11 @@ import { Button, CustomInput, SpanError, Container} from './style'
 
 interface AddTodoProps {
     sort: string,
-    value: TodoItem[]
-    setValue: (newValue: TodoItem[]) => void
+    values: TodoItem[]
+    setValues: (newValue: TodoItem[]) => void
 }
 
-export default function AddTodo ({ setValue, value, sort }: AddTodoProps) {
+export default function AddTodo ({ setValues, values, sort }: AddTodoProps) {
     const [inputValue, setInputValue] = useState<string>('')
     const [onError, setOnError] = useState<boolean>(false)
     const id = useId()
@@ -24,9 +24,9 @@ export default function AddTodo ({ setValue, value, sort }: AddTodoProps) {
                 id: `${id}-${performance.now()}`,
                 text: inputValue,
                 status: false,
-                date: new Date()
+                date: new Date(),
             }
-            sort === 'new' ? setValue([taskToAdd, ...value]) : setValue([...value, taskToAdd])
+            sort === 'new' ? setValues([taskToAdd, ...values]) : setValues([...values, taskToAdd])
             setInputValue('')           
         }
         else {

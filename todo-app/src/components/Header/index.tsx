@@ -6,7 +6,6 @@ interface HeaderProps {
 }
 
 export default function Header ({ children }: HeaderProps) {
-
     return (
     <HeaderDiv>
         {children}

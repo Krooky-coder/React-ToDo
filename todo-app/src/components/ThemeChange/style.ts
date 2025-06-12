@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const ButtonThemeChange = styled.button`
+export const ButtonThemeChange = styled.button`
   width: 30px;
   height: 30px;
   display: flex;
@@ -15,7 +15,7 @@ const ButtonThemeChange = styled.button`
     outline: none
   }
 `;
-const ToggleIcon = styled.svg.attrs({
+export const ToggleIcon = styled.svg.attrs({
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 24 24",
   })` 
@@ -23,5 +23,3 @@ const ToggleIcon = styled.svg.attrs({
     height: 100%;
     fill: ${props => props.theme.main};
 `;
-
-export { ButtonThemeChange, ToggleIcon }

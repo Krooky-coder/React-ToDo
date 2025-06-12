@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Button = styled.button`
+export const Button = styled.button`
     font-size: 1em;
     margin: 1em;
     padding: 0.25em 1em;
@@ -11,7 +11,7 @@ const Button = styled.button`
     background: ${props => props.theme.colors.primary};
 `;
 
-const CustomInput = styled.input`
+export const CustomInput = styled.input`
     background: ${props => props.theme.colors.primary};
     padding: 10px 12px;
     border: 2px solid ${props => props.theme.main};
@@ -20,4 +20,3 @@ const CustomInput = styled.input`
     font-family: "Rubik Bubbles", system-ui;
     color: ${props => props.theme.colors.text};
 `
-export { Button, CustomInput }

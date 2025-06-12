@@ -3,9 +3,9 @@ import  type TodoItem  from '../../TodoItem'
 import { useState, type ChangeEvent} from "react"
 
 export interface EditProps {
-    values: TodoItem[]
-    setValue: (newValue: TodoItem[]) => void
-    itemId: string
+    values: TodoItem[],
+    setValue: (newValue: TodoItem[]) => void,
+    itemId: string,
 }
 
 export default function EditTodo ({ setValue, itemId, values }: EditProps) {
@@ -17,23 +17,20 @@ export default function EditTodo ({ setValue, itemId, values }: EditProps) {
     }
 
     const handleClickEdit = () => {
-        values.forEach ((item, index) => {
-            if (item.id === itemId) {
-                setInputValue(values[index].text)
-            } 
-        })
+        const addValue = values.find((item) => item.id === itemId)
+        setInputValue(addValue ? addValue.text : '')
         setIsEditing(true)
     }
 
     const handleClickSave = () => {
         if (valueInput) {
-            const editTasks = [...values] 
-            editTasks.map((item) => {
+            const newArr = values.map((item) => {
                 if (item.id === itemId) {
-                    item.text = valueInput
+                    return {...item, text: valueInput} 
                 }
+                return item
             })
-            setValue(editTasks)
+            setValue(newArr)
         }
         setIsEditing(false)
     }

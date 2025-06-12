@@ -1,26 +1,25 @@
 import  type TodoItem  from '../../TodoItem'
 import { Button, ContainerSort, ListSpan } from './style'
 import EditTodo from '../EditTodo/index'
-import { useEffect, useState } from 'react';
 
 interface TodoListProps {
     sort: string
     setSort: (newValue: "new" | "old") => void
     values: TodoItem[]
-    setValue: (newValue: TodoItem[]) => void
+    setValues: (newValue: TodoItem[]) => void
 }
 
-export default function TodoList ({ setValue, values, sort, setSort }: TodoListProps) {
+export default function TodoList ({ setValues, values, sort, setSort }: TodoListProps) {
     const handleClickSetDone = (itemId: string) => {
         const newDone = values.map(item => 
             item.id === itemId ? { ...item, status: !item.status } : item
         );
-        setValue(newDone);
+        setValues(newDone);
     }
 
     const handleClickDelete = (itemId: string) => {
         const newTasks = values.filter(item => item.id !== itemId);
-        setValue(newTasks);
+        setValues(newTasks);
     }
 
     const handleClickSort = () => {
@@ -31,7 +30,7 @@ export default function TodoList ({ setValue, values, sort, setSort }: TodoListP
             const timeB = new Date(b.date).getTime()
             return timeA > timeB ? timeB - timeA : timeA - timeB
         })
-        setValue(newDone)
+        setValues(newDone)
     } 
     
         return (
@@ -50,7 +49,7 @@ export default function TodoList ({ setValue, values, sort, setSort }: TodoListP
                     <Button onClick={() => handleClickDelete(item.id)}>delete</Button>
                     <EditTodo 
                         itemId={item.id}
-                        setValue={setValue}
+                        setValue={setValues}
                         values={values}
                     />
                 </li>

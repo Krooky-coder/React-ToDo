@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const Button = styled.button`
+export const Button = styled.button`
     font-size: 1em;
     margin: 1em;
     padding: 0.25em 1em;
@@ -11,7 +11,7 @@ const Button = styled.button`
     background: ${props => props.theme.colors.primary};
 `;
 
-const ContainerSort = styled.div`
+export const ContainerSort = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,8 +22,6 @@ interface ListSpanProps {
     status: boolean;
 }
 
-const ListSpan = styled.span<ListSpanProps>`
+export const ListSpan = styled.span<ListSpanProps>`
     text-decoration: ${props => props.status ? 'line-through' : 'none'}
 `
-
-export { Button, ContainerSort, ListSpan }
