@@ -1,5 +1,5 @@
-import DarkSvg from '../SVG\'s/DarkSvg';
-import LightSvg from '../SVG\'s/LightSvg';
+import DarkThemeSvg from '../SVG\'s/DarkThemeSvg';
+import LightThemeSvg from '../SVG\'s/LightThemeSvg';
 import { ToggleIcon } from '../SVG\'s/style';
 import { ButtonThemeChange } from './style';
 
@@ -17,9 +17,9 @@ export default function ThemeChange({ setTheme, theme }: ThemeChangeProps) {
         <ButtonThemeChange onClick={handleToggleTheme}>
             <ToggleIcon>
                 {theme === 'light' ? (
-                    <LightSvg />
+                    <LightThemeSvg />
                 ) : (
-                    <DarkSvg />
+                    <DarkThemeSvg />
                 )}
             </ToggleIcon>
         </ButtonThemeChange>
