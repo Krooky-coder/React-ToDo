@@ -10,12 +10,11 @@ import Header from '../components/Header';
 import { useEffect, useState } from 'react';
 import { Container } from './style';
 
-
 function App() {
-  const { initialValue: tasksValue, setStoredValue: storeTasksValue} = useLocalStorage<TodoItem[]>('Tasks', []);
+  const { initialValue: tasksValue, setStoredValue: storeTasksValue } = useLocalStorage<TodoItem[]>('Tasks', []);
   const { initialValue: themeValue, setStoredValue: storeThemeValue } = useLocalStorage<string>('Theme', 'light');
-  const { initialValue : sortValue, setStoredValue : storeSortValue} = useLocalStorage<'new'|'old'>('SortType', 'new');
-  
+  const { initialValue: sortValue, setStoredValue: storeSortValue } = useLocalStorage<'new'|'old'>('SortType', 'new');
+
   const [values, setValues] = useState<TodoItem[]>(tasksValue);
   const [theme, setTheme] = useState<string>(themeValue);
   const [sort, setSort] = useState<'new'|'old'>(sortValue);
@@ -23,11 +22,11 @@ function App() {
   const themeToProvide = theme === 'light' ? lightTheme : blackTheme;
 
   useEffect(() => {
-    storeTasksValue(values)
-    storeThemeValue(theme)
-    storeSortValue(sort)
+    storeTasksValue(values);
+    storeThemeValue(theme);
+    storeSortValue(sort);
   }, [values, theme, sort])
-  
+
   return (
     <>
       <ThemeProvider theme={themeToProvide}>
@@ -35,13 +34,12 @@ function App() {
           <Header>
             <ThemeChange theme={theme} setTheme={setTheme} />
           </Header>
-          <AddTodo sort={sort} values={values} setValues={setValues}/>
-            <TodoList sort={sort} setSort={setSort} values={values} setValues={setValues}>
-            </TodoList>
+          <AddTodo sort={sort} values={values} setValues={setValues} />
+          <TodoList sort={sort} setSort={setSort} values={values} setValues={setValues} />
         </Container>
       </ThemeProvider>
     </>
-  ) 
+  );
 }
 
 export default App

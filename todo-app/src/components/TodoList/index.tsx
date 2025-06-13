@@ -1,36 +1,33 @@
-import  type TodoItem  from '../../TodoItem'
-import { Button, ContainerSort, ListSpan } from './style'
-import EditTodo from '../EditTodo/index'
+import  type TodoItem  from '../../TodoItem';
+import { Button, ContainerSort, ListSpan } from './style';
+import EditTodo from '../EditTodo/index';
 
 interface TodoListProps {
-    sort: string
-    setSort: (newValue: "new" | "old") => void
-    values: TodoItem[]
-    setValues: (newValue: TodoItem[]) => void
+    sort: string;
+    setSort: (newValue: "new" | "old") => void;
+    values: TodoItem[];
+    setValues: (newValue: TodoItem[]) => void;
 }
 
-export default function TodoList ({ setValues, values, sort, setSort }: TodoListProps) {
+export default function TodoList({ setValues, values, sort, setSort }: TodoListProps) {
     const handleClickSetDone = (itemId: string) => {
-        const newDone = values.map(item => 
+        setValues(values.map(item => 
             item.id === itemId ? { ...item, status: !item.status } : item
-        );
-        setValues(newDone);
+        ));
     }
 
     const handleClickDelete = (itemId: string) => {
-        const newTasks = values.filter(item => item.id !== itemId);
-        setValues(newTasks);
+        setValues(values.filter(item => item.id !== itemId));
     }
 
     const handleClickSort = () => {
         setSort(sort === 'new' ? 'old' : 'new')
-        const newDone = [...values]
-        newDone.sort((a: TodoItem, b: TodoItem) => {
+        values.sort((a: TodoItem, b: TodoItem) => {
             const timeA = new Date(a.date).getTime()
             const timeB = new Date(b.date).getTime()
             return timeA > timeB ? timeB - timeA : timeA - timeB
         })
-        setValues(newDone)
+        setValues(values)
     } 
     
         return (
@@ -40,7 +37,7 @@ export default function TodoList ({ setValues, values, sort, setSort }: TodoList
                 <Button onClick={handleClickSort}>⏰</Button></>}
             </ContainerSort>
             <ul>
-                {values.map((item: TodoItem) =>
+                {values.map((item) =>
                 <li key={item.id} id={item.id}>
                     <ListSpan status={item.status}>{item.text}</ListSpan>
                     <Button onClick={() => handleClickSetDone(item.id)}>

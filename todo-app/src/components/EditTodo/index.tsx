@@ -1,39 +1,43 @@
-import { Button, CustomInput } from "./style"
-import  type TodoItem  from '../../TodoItem'
-import { useState, type ChangeEvent} from "react"
+import { Button, CustomInput } from "./style";
+import  type TodoItem  from '../../TodoItem';
+import { useState, type ChangeEvent} from "react";
 
 export interface EditProps {
-    values: TodoItem[],
-    setValue: (newValue: TodoItem[]) => void,
-    itemId: string,
+    values: TodoItem[];
+    setValue: (newValue: TodoItem[]) => void;
+    itemId: string;
 }
 
-export default function EditTodo ({ setValue, itemId, values }: EditProps) {
-    const [valueInput, setInputValue] = useState<string>('')
-    const [isEditing, setIsEditing] = useState<boolean>(false)
+export default function EditTodo({ setValue, itemId, values }: EditProps) {
+    const [valueInput, setInputValue] = useState<string>('');
+    const [isEditing, setIsEditing] = useState<boolean>(false);
 
     const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setInputValue(e.target.value)
-    }
+        setInputValue(e.target.value);
+    };
 
     const handleClickEdit = () => {
-        const addValue = values.find((item) => item.id === itemId)
-        setInputValue(addValue ? addValue.text : '')
-        setIsEditing(true)
-    }
+        const addValue = values.find((item) => item.id === itemId);
+        setInputValue(addValue ? addValue.text : '');
+        setIsEditing(true);
+    };
 
     const handleClickSave = () => {
         if (valueInput) {
-            const newArr = values.map((item) => {
-                if (item.id === itemId) {
-                    return {...item, text: valueInput} 
-                }
-                return item
-            })
-            setValue(newArr)
+            const newArr = values.map((item) => item.id === itemId 
+                ? { ...item, text: valueInput } 
+                : item
+          );
+            setValue(newArr);
         }
-        setIsEditing(false)
-    }
+        setIsEditing(false);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' && isEditing) {
+          handleClickSave();
+        }
+      };
 
     return (
         <>
@@ -43,13 +47,14 @@ export default function EditTodo ({ setValue, itemId, values }: EditProps) {
                         name="editInput"
                         value={valueInput}
                         onChange={handleOnChange}
+                        onKeyDown={handleKeyDown}
                         type="text"
                     />
                     <Button onClick={handleClickSave}>Save</Button>
                 </>
-            ) : (
-            <Button onClick={handleClickEdit}>edit</Button>
+            ) : ( 
+                <Button onClick={handleClickEdit}>Edit</Button>
             )}
         </>
-    )
+    );
 }

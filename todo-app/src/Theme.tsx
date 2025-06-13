@@ -1,21 +1,13 @@
-interface DefaultTheme {
-  main: string,
-  colors: {
-    primary?: string,
-    secondary?: string,
-    text: string,
-    background: string,
-  },
-}
+import { type DefaultTheme } from "styled-components";
 
-export const lightTheme: DefaultTheme  = {
-    main: 'lightBlue',
-    colors: {
-        text: 'black',
-        primary: 'white',
-        secondary: 'darkRed',
-        background: 'pink',
-    }
+export const lightTheme: DefaultTheme = {
+  main: 'lightBlue',
+  colors: {
+      text: 'black',
+      primary: 'white',
+      secondary: 'darkRed',
+      background: 'pink',
+  }
 }
 
 export const blackTheme: DefaultTheme = {

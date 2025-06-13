@@ -1,38 +1,39 @@
 import { useId, useState, type ChangeEvent} from 'react';
-import  type TodoItem  from '../../TodoItem'
-import { Button, CustomInput, SpanError, Container} from './style'
+import  type TodoItem  from '../../TodoItem';
+import { Button, CustomInput, SpanError, Container} from './style';
 
 interface AddTodoProps {
-    sort: string,
-    values: TodoItem[]
-    setValues: (newValue: TodoItem[]) => void
+    sort: string;
+    values: TodoItem[];
+    setValues: (newValue: TodoItem[]) => void;
 }
 
 export default function AddTodo ({ setValues, values, sort }: AddTodoProps) {
-    const [inputValue, setInputValue] = useState<string>('')
-    const [onError, setOnError] = useState<boolean>(false)
-    const id = useId()
+    const [inputValue, setInputValue] = useState<string>('');
+    const [onError, setOnError] = useState<boolean>(false);
+    const id = useId();
 
-    function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
-        setInputValue(e.target.value)
-    }
+    const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setInputValue(e.target.value);
+    };
 
-    function handleOnClick () {
+    const handleOnClick = () => {
         if (inputValue) {
-            setOnError(false)  
+            setOnError(false);
             const taskToAdd = {
                 id: `${id}-${performance.now()}`,
                 text: inputValue,
                 status: false,
                 date: new Date(),
             }
-            sort === 'new' ? setValues([taskToAdd, ...values]) : setValues([...values, taskToAdd])
-            setInputValue('')           
+            sort === 'new' 
+                ? setValues([taskToAdd, ...values]) 
+                : setValues([...values, taskToAdd]);
+            setInputValue('');           
+        }   else {
+            setOnError(true);
         }
-        else {
-            setOnError(true)
-        }
-    }
+    };
 
     return (
         <Container>
