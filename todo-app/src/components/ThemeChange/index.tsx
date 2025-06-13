@@ -16,11 +16,7 @@ export default function ThemeChange({ setTheme, theme }: ThemeChangeProps) {
     return (
         <ButtonThemeChange onClick={handleToggleTheme}>
             <ToggleIcon>
-                {theme === 'light' ? (
-                    <LightThemeSvg />
-                ) : (
-                    <DarkThemeSvg />
-                )}
+                {theme === 'light' ? <LightThemeSvg /> : <DarkThemeSvg />}
             </ToggleIcon>
         </ButtonThemeChange>
     );
