@@ -23,7 +23,6 @@ export default function AddTodo () {
         };
     };
 
-
     async function handleOnClick () {
         if (inputValue) {
             setOnError(false);
