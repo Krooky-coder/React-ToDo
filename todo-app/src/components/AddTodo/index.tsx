@@ -43,7 +43,6 @@ export default function AddTodo () {
                 type="text"
                 placeholder="Введите данные" 
                 onKeyDown={handleKeyDown}
-
             />
             <Button onClick={handleOnClick}>ADD</Button>
             <div>{onError && <SpanError>ERROR: EMPTY INPUT</SpanError>}</div>
