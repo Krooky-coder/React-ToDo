@@ -14,23 +14,25 @@
   font-style: normal;
 }
 
-
-
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
+
 button {
   margin: 10px;
 }
+
 .button-dellALL {
   color: aliceblue;
   background-image: url('./assets/delete.jpg');
@@ -42,6 +44,7 @@ button {
   height: 150px;
 
 }
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);

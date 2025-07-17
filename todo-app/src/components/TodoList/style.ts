@@ -17,6 +17,21 @@ export const ContainerSort = styled.div`
     align-items: center;
     gap: 10px;
 `
+interface CustomButton {
+    active: boolean
+}
+
+export const ButtonPages = styled.button<CustomButton>`
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    padding: 7px;
+    font-size: small;
+    border: black solid 1px;
+    text-align: center;
+    background-color: ${(props) => (props.active ? props.theme.main : 'white')};
+    color: ${(props) => (props.active ? props.theme.colors.text : props.theme.colors.secondary)};    
+`
 
 interface ListSpanProps {
     status: boolean;

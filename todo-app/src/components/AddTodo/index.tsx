@@ -1,38 +1,33 @@
-import { useId, useState, type ChangeEvent} from 'react';
-import  type TodoItem  from '../../TodoItem'
-import { Button, CustomInput, SpanError, Container} from './style'
+import {  useState, type ChangeEvent} from 'react';
+import { Button, CustomInput, SpanError, Container} from './style';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '../../store';
+import { postTodos, fetchTodos } from '../../api/todos';
+import useLocalStorage from '../../utils/localStorage';
 
-interface AddTodoProps {
-    sort: string,
-    values: TodoItem[]
-    setValues: (newValue: TodoItem[]) => void
-}
+export default function AddTodo () {
+    const [inputValue, setInputValue] = useState<string>('');
+    const [onError, setOnError] = useState<boolean>(false);
+    const dispatch = useDispatch<AppDispatch>();
 
-export default function AddTodo ({ setValues, values, sort }: AddTodoProps) {
-    const [inputValue, setInputValue] = useState<string>('')
-    const [onError, setOnError] = useState<boolean>(false)
-    const id = useId()
+    const { initialValue: page} = useLocalStorage('CurrentPage', 1);
+    const { initialValue: limit} = useLocalStorage('Limit', 2);
 
     function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
-        setInputValue(e.target.value)
-    }
+        setInputValue(e.target.value);
+    };
 
-    function handleOnClick () {
+    async function handleOnClick () {
         if (inputValue) {
-            setOnError(false)  
-            const taskToAdd = {
-                id: `${id}-${performance.now()}`,
-                text: inputValue,
-                status: false,
-                date: new Date(),
-            }
-            sort === 'new' ? setValues([taskToAdd, ...values]) : setValues([...values, taskToAdd])
-            setInputValue('')           
+            setOnError(false);
+            await dispatch(postTodos({ text: inputValue }));
+            await dispatch(fetchTodos({ page, limit }));
+            setInputValue('');
         }
         else {
             setOnError(true)
-        }
-    }
+        };
+    };
 
     return (
         <Container>
@@ -45,5 +40,5 @@ export default function AddTodo ({ setValues, values, sort }: AddTodoProps) {
             <Button onClick={handleOnClick}>ADD</Button>
             <div>{onError && <SpanError>ERROR: EMPTY INPUT</SpanError>}</div>
         </Container>
-    )
-}
+    );
+};

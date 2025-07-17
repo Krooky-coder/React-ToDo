@@ -1,8 +1,8 @@
 export default interface TodoItem {
-    id: string,
+    id: number,
     text: string,
-    status: boolean,
-    date: Date,
+    completed: boolean,
+    createdAt: string,
   }
 
   declare module 'styled-components' {
