@@ -1,4 +1,4 @@
-import {  useState, type ChangeEvent} from 'react';
+import {  useState, type ChangeEvent, type KeyboardEvent} from 'react';
 import { Button, CustomInput, SpanError, Container} from './style';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../store';
@@ -16,6 +16,13 @@ export default function AddTodo () {
     function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
         setInputValue(e.target.value);
     };
+
+    function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+        if (e.key === 'Enter') {
+            handleOnClick();
+        };
+    };
+
 
     async function handleOnClick () {
         if (inputValue) {
@@ -36,6 +43,8 @@ export default function AddTodo () {
                 onChange={handleOnChange}
                 type="text"
                 placeholder="Введите данные" 
+                onKeyDown={handleKeyDown}
+
             />
             <Button onClick={handleOnClick}>ADD</Button>
             <div>{onError && <SpanError>ERROR: EMPTY INPUT</SpanError>}</div>
