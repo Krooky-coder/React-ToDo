@@ -1,9 +1,10 @@
 import { Button, CustomInput } from "./style";
-import type { AppDispatch, RootState } from '../../store';
+import type { AppDispatch } from '../../store';
 import { useState, type ChangeEvent} from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { putTodos, fetchTodos } from "../../api/todos";
 import useLocalStorage from "../../utils/localStorage";
+import { useAppSelector } from "../../utils/useAppSeleсtor";
 
 export interface EditProps {
     itemId: string,
@@ -17,7 +18,7 @@ export default function EditTodo ({ itemId }: EditProps) {
     const { initialValue: limit} = useLocalStorage('Limit', 2);
 
     const dispatch = useDispatch<AppDispatch>();
-    const tasks = useSelector((state: RootState) => state.todos.todos);
+    const tasks = useAppSelector((state) => state.todos.todos);
 
     const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);

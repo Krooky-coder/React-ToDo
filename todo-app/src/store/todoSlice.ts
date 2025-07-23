@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type TodoItem from '../TodoItem'
-import { fetchTodos, postTodos } from '../api/todos';
+import { fetchTodos, patchTodos } from '../api/todos';
 
 interface CounterState {
     todos: Array<TodoItem>;
@@ -23,7 +23,16 @@ const initialState: CounterState = {
 const todoSlice = createSlice({
     name: 'todos',
     initialState,
-    reducers: {},
+    reducers: {
+        switchStatus(state, action) {
+        state.todos = state.todos.map((item: TodoItem) => {
+            if (`${item.id}` === action.payload.itemId) {
+                return { ...item, completed: !item.completed };
+            }
+                return item;
+        });
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchTodos.pending, (state) => {
@@ -44,8 +53,12 @@ const todoSlice = createSlice({
                 }
                 state.onLoading = false;
             })
+            .addCase(patchTodos.pending, (state) => {
+                state.onLoading = false
+            })
     }
 })
 
+export const { switchStatus } = todoSlice.actions;
 export default todoSlice.reducer;
 

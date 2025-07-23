@@ -1,41 +1,33 @@
-import AddTodo from '../components/AddTodo'
 import './App.css'
-import useLocalStorage from '../utils/localStorage';
-import TodoList from '../components/TodoList';
-import ThemeChange from '../components/ThemeChange';
+import { HomePage } from '../Pages/HomePage';
+import { Route, Routes } from 'react-router-dom';
+import { PageNotFound } from '../Pages/PageNotFound';
+import RegisterForm from '../Pages/RegisterForm';
 import { ThemeProvider } from 'styled-components';
+import useLocalStorage from '../utils/localStorage';
 import { blackTheme, lightTheme } from '../Theme';
-import Header from '../components/Header';
-import { useEffect, useState } from 'react';
-import { Container } from './style';
+import LoginForm from '../Pages/LoginForm/index'
 
 function App() {
-  const { initialValue: themeValue, setStoredValue: storeThemeValue } = useLocalStorage<string>('Theme', 'light');
-  const { initialValue : sortValue, setStoredValue : storeSortValue} = useLocalStorage<'new'|'old'>('SortType', 'new');
-  
-  const [theme, setTheme] = useState<string>(themeValue);
-  const [sort, setSort] = useState<'new'|'old'>(sortValue);
 
-  const themeToProvide = theme === 'light' ? lightTheme : blackTheme;
-
-  useEffect(() => {
-    storeThemeValue(theme)
-    storeSortValue(sort)
-  }, [theme, sort]);
+  const { initialValue: themeValue } = useLocalStorage<string>('Theme', 'light');
   
+  const themeToProvide = themeValue === 'light' ? lightTheme : blackTheme;
+
   return (
-    <>
-      <ThemeProvider theme={themeToProvide}>
-        <Container>
-          <Header>
-            <ThemeChange theme={theme} setTheme={setTheme} />
-          </Header>
-          <AddTodo/>
-            <TodoList sort={sort} setSort={setSort}>
-            </TodoList>
-        </Container>
-      </ThemeProvider>
-    </>
+    <ThemeProvider theme={themeToProvide}>
+      <Routes>
+        <Route path='/' element={<HomePage />} />
+        <Route path='/register' element={<RegisterForm />} />
+        <Route path='/login' element={<LoginForm />} />
+        <Route path='/profile' element={<App />} />
+
+
+
+        {/* Not Found */}
+        <Route path='/*' element={<PageNotFound />} />
+      </Routes>
+    </ThemeProvider>
   ) 
 }
 

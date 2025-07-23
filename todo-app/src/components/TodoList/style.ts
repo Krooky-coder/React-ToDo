@@ -18,7 +18,7 @@ export const ContainerSort = styled.div`
     gap: 10px;
 `
 interface CustomButton {
-    active: boolean
+    $active: boolean
 }
 
 export const ButtonPages = styled.button<CustomButton>`
@@ -29,14 +29,14 @@ export const ButtonPages = styled.button<CustomButton>`
     font-size: small;
     border: black solid 1px;
     text-align: center;
-    background-color: ${(props) => (props.active ? props.theme.main : 'white')};
-    color: ${(props) => (props.active ? props.theme.colors.text : props.theme.colors.secondary)};    
+    background-color: ${(props) => (props.$active ? props.theme.main : 'white')};
+    color: ${(props) => (props.$active ? props.theme.colors.text : props.theme.colors.secondary)};    
 `
 
 interface ListSpanProps {
-    status: boolean;
+    $status: boolean;
 }
 
 export const ListSpan = styled.span<ListSpanProps>`
-    text-decoration: ${props => props.status ? 'line-through' : 'none'}
+    text-decoration: ${props => props.$status ? 'line-through' : 'none'}
 `

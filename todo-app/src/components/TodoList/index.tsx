@@ -4,9 +4,11 @@ import EditTodo from '../EditTodo/index';
 import { Pagination, Stack } from "@mui/material";
 import { useEffect, useState } from 'react';
 import { deleteTodos, fetchTodos, patchTodos } from '../../api/todos';
-import { useDispatch, useSelector } from 'react-redux';
-import type { RootState, AppDispatch } from '../../store';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '../../store';
 import useLocalStorage from '../../utils/localStorage';
+import { switchStatus } from '../../store/todoSlice';
+import { useAppSelector } from '../../utils/useAppSeleсtor';
 
 interface TodoListProps {
     sort: string;
@@ -14,12 +16,12 @@ interface TodoListProps {
 };
 
 export default function TodoList ({ sort, setSort }: TodoListProps) {
-    const pageLimitFromServer = useSelector((state: RootState) => state.todos.limit);
-    const currentPageFromServer = useSelector((state: RootState) => state.todos.currentPage);
-    const pageQtyFromServer = useSelector((state: RootState) => state.todos.pages);
-    const onError = useSelector((state: RootState) => state.todos.error);
-    const loadingStatus = useSelector((state: RootState) => state.todos.onLoading);
-    const tasksFromServer = useSelector((state: RootState) => state.todos.todos);
+    const pageLimitFromServer = useAppSelector((state) => state.todos.limit);
+    const currentPageFromServer = useAppSelector((state) => state.todos.currentPage);
+    const pageQtyFromServer = useAppSelector((state) => state.todos.pages);
+    const onError = useAppSelector((state) => state.todos.error);
+    const loadingStatus = useAppSelector((state) => state.todos.onLoading);
+    const tasksFromServer = useAppSelector((state) => state.todos.todos);
     
     const { initialValue: CurrentPage, setStoredValue: storeCurrentPage } = useLocalStorage<number>('CurrentPage', currentPageFromServer);
     const { initialValue: LocalPagelimit, setStoredValue: storePagelimit } = useLocalStorage<number>('Limit', pageLimitFromServer);
@@ -35,6 +37,7 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
         storeCurrentPage(page);
         dispatch(fetchTodos({page, limit}));
         setpageQty(pageQtyFromServer);
+
         if (currentPageFromServer > pageQtyFromServer) {
             setPage(1);
         };
@@ -46,31 +49,32 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
     
     const handleClickSetDone = async (itemId: string, completed: boolean) => {
         await dispatch(patchTodos({ id: itemId, completed: !completed }));
-        await dispatch(fetchTodos({page, limit}));
+        dispatch(switchStatus({ itemId, completed }));
     };
-
+    
     const handleClickDelete = async (itemId: string) => {
         await dispatch(deleteTodos({ id: itemId }));
         await dispatch(fetchTodos({page, limit}));
     };
-
+    
     const handleClickSort = async () => {
         setSort(sort === 'new' ? 'old' : 'new')
     };
+    
+    const taskToRender = [...tasksFromServer];
 
-    const taskToRender = [...tasksFromServer]
     if (sort === 'new') {
         taskToRender.sort((a: TodoItem, b: TodoItem) => {
         const timeA = new Date(a.createdAt).getTime();
         const timeB = new Date(b.createdAt).getTime();
         return timeB - timeA;
-        });
+    });
     } else {
-        taskToRender.sort((a: TodoItem, b: TodoItem) => {
+    taskToRender.sort((a: TodoItem, b: TodoItem) => {
         const timeA = new Date(a.createdAt).getTime();
         const timeB = new Date(b.createdAt).getTime();
         return timeA - timeB;
-        });
+    });
     }
 
     return (
@@ -87,7 +91,7 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
                     <ul>
                         {taskToRender.map((item: TodoItem) =>
                         <li key={item.id} id={`${item.id}`}>
-                            <ListSpan status={item.completed}>{item.text}</ListSpan>
+                            <ListSpan $status={item.completed}>{item.text}</ListSpan>
                             <Button onClick={() => handleClickSetDone(`${item.id}`, item.completed)}>
                                 {item.completed ? '✅' : '❌'}
                             </Button>
@@ -112,7 +116,7 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
                             {[2, 4, 6].map((val) => (
                             <ButtonPages
                                 key={val}
-                                active={limit === val}
+                                $active={limit === val}
                                 onClick={() => setLimit(val)}
                             >
                                 {val}
