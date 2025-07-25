@@ -1,5 +1,5 @@
 import  type TodoItem  from '../../TodoItem';
-import { Button, ButtonPages, ContainerSort, ListSpan } from './style';
+import { Button, ButtonPages, ContainerSort, ListSpan, LogoBtnContainer, LogoBtn } from './style';
 import EditTodo from '../EditTodo/index';
 import { Pagination, Stack } from "@mui/material";
 import { useEffect, useState } from 'react';
@@ -16,6 +16,7 @@ interface TodoListProps {
 };
 
 export default function TodoList ({ sort, setSort }: TodoListProps) {
+    const status = useAppSelector((state) => state.auth.status)
     const pageLimitFromServer = useAppSelector((state) => state.todos.limit);
     const currentPageFromServer = useAppSelector((state) => state.todos.currentPage);
     const pageQtyFromServer = useAppSelector((state) => state.todos.pages);
@@ -23,19 +24,20 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
     const loadingStatus = useAppSelector((state) => state.todos.onLoading);
     const tasksFromServer = useAppSelector((state) => state.todos.todos);
     
+    const { initialValue: accessToken} = useLocalStorage('Access Token', '');
     const { initialValue: CurrentPage, setStoredValue: storeCurrentPage } = useLocalStorage<number>('CurrentPage', currentPageFromServer);
     const { initialValue: LocalPagelimit, setStoredValue: storePagelimit } = useLocalStorage<number>('Limit', pageLimitFromServer);
     
     const [limit, setLimit] = useState(LocalPagelimit);
     const [page, setPage] = useState<number>(CurrentPage);
     const [pageQty, setpageQty] = useState(pageQtyFromServer);
-
+    console.log(accessToken)
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
+        dispatch(fetchTodos({page, limit, accessToken}));
         storePagelimit(limit);
         storeCurrentPage(page);
-        dispatch(fetchTodos({page, limit}));
         setpageQty(pageQtyFromServer);
 
         if (currentPageFromServer > pageQtyFromServer) {
@@ -48,13 +50,13 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
     };
     
     const handleClickSetDone = async (itemId: string, completed: boolean) => {
-        await dispatch(patchTodos({ id: itemId, completed: !completed }));
+        await dispatch(patchTodos({ id: itemId, completed: !completed, accessToken }));
         dispatch(switchStatus({ itemId, completed }));
     };
     
     const handleClickDelete = async (itemId: string) => {
-        await dispatch(deleteTodos({ id: itemId }));
-        await dispatch(fetchTodos({page, limit}));
+        await dispatch(deleteTodos({ id: itemId, accessToken }));
+        await dispatch(fetchTodos({page, limit, accessToken}));
     };
     
     const handleClickSort = async () => {
@@ -79,7 +81,14 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
 
     return (
     <>  
-        { onError ? <span>{onError}</span> :
+        { onError ? 
+        <>
+            <span>{onError}</span>
+            <LogoBtnContainer>
+                <LogoBtn to='/register'>регистрация</LogoBtn>
+                <LogoBtn to='/login'>вход</LogoBtn>
+            </LogoBtnContainer>
+        </> :
         <> 
         { loadingStatus ? <span>loading...</span> :  
             <>

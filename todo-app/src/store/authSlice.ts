@@ -8,7 +8,7 @@ interface AuthState {
      age?: number;
    } | null;
    token: string | null;
-   status: 'idle' | 'loading' | 'failed';
+   status: 'idle' | 'loading' | 'failed' | 'successful';
  }
 
 const initialState: AuthState = {
@@ -23,11 +23,25 @@ const authSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+            .addCase(fetchRegister.pending, (state) => {
+                state.status = 'loading'
+            })
             .addCase(fetchRegister.fulfilled, (state, action) => {
+                state.status = 'successful'
                 state.token = action.payload.accessToken
             })
+            .addCase(fetchRegister.rejected, (state) => {
+                state.status = 'failed'
+            })
+            .addCase(fetchLogin.pending, (state) => {
+                state.status = 'loading'
+            })
             .addCase(fetchLogin.fulfilled, (state, action) => {
+                state.status = 'successful'
                 state.token = action.payload.accessToken
+            })
+            .addCase(fetchLogin.rejected, (state) => {
+                state.status = 'failed'
             })
             .addCase(fetchRefresh.fulfilled, (state, action) => {
                 state.token = action.payload.accessToken

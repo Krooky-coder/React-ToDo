@@ -7,6 +7,7 @@ const API_URL = 'http://localhost:3001';
 interface FetchTodosParams {
   page: number;
   limit: number;
+  accessToken: string;
 };
 
 interface ResponseFetchItem {
@@ -15,6 +16,7 @@ interface ResponseFetchItem {
   page: number;
   limit: number;
   totalPages: number;
+  accessToken: null
 };
 
 export const fetchTodos = createAsyncThunk<
@@ -23,10 +25,14 @@ export const fetchTodos = createAsyncThunk<
   { rejectValue: string}
 >(
   'todos/fetchTodos',
-  async ({page, limit}, thunkAPI) => {
+  async ({page, limit, accessToken}, thunkAPI) => {
     try {
-      const response = await axios.get(`${API_URL}/todos?page=${page}&limit=${limit}`);
-      return response.data;
+      const response = await axios.get(`${API_URL}/todos?page=${page}&limit=${limit}`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+    });
+    return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
@@ -43,6 +49,7 @@ export const fetchTodos = createAsyncThunk<
 
 interface PostTodosParams {
   text: string;
+  accessToken:string;
 };
 
 export const postTodos = createAsyncThunk<
@@ -50,13 +57,21 @@ export const postTodos = createAsyncThunk<
   PostTodosParams
 >(
   'todos/postTodos',
-  async (text, _) => {
-    const response = await axios.post(`${API_URL}/todos`, text);
+  async ({ text, accessToken}, _) => {
+    const response = await axios.post(`${API_URL}/todos`,
+      { text },
+      {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+          }
+      });
     return response.data;
   }
 );
 
 interface PutTodosParams {
+  accessToken: string,
   id: string,
   text: string,
   completed?: boolean,
@@ -67,13 +82,21 @@ export const putTodos = createAsyncThunk<
   PutTodosParams
 >(
   `todos/putTodos`,
-  async ({ id, text, completed }, _) => {
-    const response = await axios.put(`${API_URL}/todos/${id}`, { text, completed });
+  async ({ id, text, completed, accessToken }, _) => {
+    const response = await axios.put(`${API_URL}/todos/${id}`, 
+      { text, completed },
+      {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+          }
+      });
     return response.data;
   }
 );
 
 interface DeleteTodosParams {
+  accessToken: string,
   id: string
 };
 
@@ -82,13 +105,21 @@ export const deleteTodos = createAsyncThunk<
   DeleteTodosParams
 >(
   `todos/deleteTodos`,
-  async ({ id }, _) => {
-    const response = await axios.delete(`${API_URL}/todos/${id}`);
+  async ({ id, accessToken }, _) => {
+    const response = await axios.delete(`${API_URL}/todos/${id}`, 
+      {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+          }
+      }
+    );
     return response.status;
   }
 );
 
 interface PatchTodosParams {
+  accessToken: string,
   id: string, 
   completed: boolean,
 };
@@ -98,8 +129,15 @@ export const patchTodos = createAsyncThunk<
   PatchTodosParams
 >(
   `todos/patchTodos`,
-  async ({ id, completed}, _) => {
-    const response = await axios.patch(`${API_URL}/todos/${id}/toggle`, { completed });
+  async ({ id, completed, accessToken}, _) => {
+    const response = await axios.patch(`${API_URL}/todos/${id}/toggle`,
+      { completed },
+      {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+          }
+      });
     return response.status;
   }
 );

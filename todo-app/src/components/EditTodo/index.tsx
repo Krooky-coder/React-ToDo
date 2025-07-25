@@ -14,6 +14,7 @@ export default function EditTodo ({ itemId }: EditProps) {
     const [valueInput, setInputValue] = useState<string>('');
     const [isEditing, setIsEditing] = useState<boolean>(false);
     
+    const { initialValue: accessToken } = useLocalStorage('Access Token', '');
     const { initialValue: page} = useLocalStorage('CurrentPage', 1);
     const { initialValue: limit} = useLocalStorage('Limit', 2);
 
@@ -26,8 +27,8 @@ export default function EditTodo ({ itemId }: EditProps) {
 
     const handleClickSave = async (id: string) => {
         if (valueInput) {
-            await dispatch(putTodos({ id, text: valueInput }));
-            dispatch(fetchTodos({page, limit}));
+            await dispatch(putTodos({ id, text: valueInput, accessToken }));
+            dispatch(fetchTodos({page, limit, accessToken}));
         }
         setIsEditing(false);
     };

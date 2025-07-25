@@ -21,10 +21,10 @@ export const fetchRegister = createAsyncThunk<
     `auth/register`,
     async ({email, password, age}, _) => {
         const response = await axios.post(`${API_URL}/auth/register`, { email, password, age });
+        console.log(response)
         return response.data
     }    
 )
-
 
 interface LoginParams { 
     email: string;
@@ -42,8 +42,8 @@ export const fetchLogin = createAsyncThunk<
     LoginParams
 >(
     `auth/login`,
-    async ({email, password, age}, _) => {
-        const response = await axios.post(`${API_URL}/auth/login`, { email, password, age });
+    async ({email, password}, _) => {
+        const response = await axios.post(`${API_URL}/auth/login`, { email, password });
         return response.data
     }    
 )

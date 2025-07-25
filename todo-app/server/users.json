@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "id": 1753444297684,
+    "email": "1qweqwe@qwe.qwe",
+    "password": "$2b$10$gtwZ7/R5lMoElX.GEbAV5OkCadOjRvlBibUAcuIOMbIzBZX24pbyC",
+    "age": 19,
+    "createdAt": "2025-07-25T11:51:37.684Z"
+  },
+  {
+    "id": 1753444361325,
+    "email": "2wekubBUJEW@qwd.qweq",
+    "password": "$2b$10$pLlUOnzYrt9c2R7z26tQOuN8/2K1HJLxGYyiHBHZCJjySQIQAWg92",
+    "age": 123,
+    "createdAt": "2025-07-25T11:52:41.325Z"
+  }
+]

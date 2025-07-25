@@ -10,6 +10,7 @@ export default function AddTodo () {
     const [onError, setOnError] = useState<boolean>(false);
     const dispatch = useDispatch<AppDispatch>();
 
+    const { initialValue: accessToken } = useLocalStorage('Access Token', '');
     const { initialValue: page} = useLocalStorage('CurrentPage', 1);
     const { initialValue: limit} = useLocalStorage('Limit', 2);
 
@@ -26,8 +27,8 @@ export default function AddTodo () {
     async function handleOnClick () {
         if (inputValue) {
             setOnError(false);
-            await dispatch(postTodos({ text: inputValue }));
-            await dispatch(fetchTodos({ page, limit }));
+            await dispatch(postTodos({ text: inputValue, accessToken }));
+            await dispatch(fetchTodos({ page, limit, accessToken }));
             setInputValue('');
         }
         else {

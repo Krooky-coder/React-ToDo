@@ -42,7 +42,7 @@ button {
   border: solid black 1px;
   margin: 10px;
   height: 150px;
-
+  color: rgb(230, 123, 123)
 }
 
 @keyframes logo-spin {
