@@ -1,5 +1,5 @@
 import  type TodoItem  from '../../TodoItem';
-import { Button, ButtonPages, ContainerSort, ListSpan, LogoBtnContainer, LogoBtn } from './style';
+import { Button, ButtonPages, ContainerSort, ListSpan} from './style';
 import EditTodo from '../EditTodo/index';
 import { Pagination, Stack } from "@mui/material";
 import { useEffect, useState } from 'react';
@@ -16,7 +16,6 @@ interface TodoListProps {
 };
 
 export default function TodoList ({ sort, setSort }: TodoListProps) {
-    const status = useAppSelector((state) => state.auth.status)
     const pageLimitFromServer = useAppSelector((state) => state.todos.limit);
     const currentPageFromServer = useAppSelector((state) => state.todos.currentPage);
     const pageQtyFromServer = useAppSelector((state) => state.todos.pages);
@@ -31,7 +30,6 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
     const [limit, setLimit] = useState(LocalPagelimit);
     const [page, setPage] = useState<number>(CurrentPage);
     const [pageQty, setpageQty] = useState(pageQtyFromServer);
-    console.log(accessToken)
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
@@ -43,7 +41,7 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
         if (currentPageFromServer > pageQtyFromServer) {
             setPage(1);
         };
-    }, [page, limit, pageQtyFromServer]);
+    }, [page, limit, pageQtyFromServer, status, onError]);
 
     const handleOnChangePage = (_: unknown, num: number) => {
         setPage(num);
@@ -51,7 +49,7 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
     
     const handleClickSetDone = async (itemId: string, completed: boolean) => {
         await dispatch(patchTodos({ id: itemId, completed: !completed, accessToken }));
-        dispatch(switchStatus({ itemId, completed }));
+        await dispatch(switchStatus({ itemId, completed }));
     };
     
     const handleClickDelete = async (itemId: string) => {
@@ -81,21 +79,17 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
 
     return (
     <>  
-        { onError ? 
-        <>
-            <span>{onError}</span>
-            <LogoBtnContainer>
-                <LogoBtn to='/register'>регистрация</LogoBtn>
-                <LogoBtn to='/login'>вход</LogoBtn>
-            </LogoBtnContainer>
-        </> :
-        <> 
-        { loadingStatus ? <span>loading...</span> :  
+        {onError !== `` ? (
+            <span>{onError}</span> 
+        ) : loadingStatus ? (
+            <span>loading...</span>
+        ) : (  
             <>
                 <ContainerSort>
                     {taskToRender.length < 1 ? null : <><span>Sort: { sort }</span> 
                     <Button onClick={handleClickSort}>⏰</Button></>}
                 </ContainerSort>
+
                 <Stack sx={{minHeight: '300px'}}>
                     <ul>
                         {taskToRender.map((item: TodoItem) =>
@@ -113,7 +107,7 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
                     </ul>
                 </Stack>
                 <Stack>
-                    {!!tasksFromServer.length &&
+                    {!!tasksFromServer.length && (
                     <>
                         <Pagination
                             sx={{marginX: 'auto'}}
@@ -133,10 +127,10 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
                             ))}
                         </div>
                     </>
-                    }
+                )}  
                 </Stack>
-            </>}
-        </>}
+            </>
+        )}
     </>
-    );
+    )
 };

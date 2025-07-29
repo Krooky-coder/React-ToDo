@@ -7,6 +7,7 @@ import type { AppDispatch } from '../../store';
 import useLocalStorage from "../../utils/localStorage";
 import { useAppSelector } from "../../utils/useAppSeleсtor";
 import { useNavigate } from 'react-router-dom';
+import ThemeChange from "../../components/ThemeChange";
 
 export default function RegisterForm() { 
     const tokenFromServer = useAppSelector(state => state.auth.token);
@@ -15,6 +16,10 @@ export default function RegisterForm() {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 
+    const { initialValue: themeValue, setStoredValue: storeThemeValue } = useLocalStorage<string>('Theme', 'light');
+    const { setStoredValue: storeIsAuth } = useLocalStorage<boolean>('IsAuth', false);
+            
+    const [theme, setTheme] = useState<string>(themeValue);
     const [Error, setError] = useState('');
     const [passwordValue, setPasswordValue] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -22,22 +27,18 @@ export default function RegisterForm() {
     const [ageValue, setAgeValue] = useState<number | string>('');
 
     useEffect(() => {
+        storeThemeValue(theme);
         if (tokenFromServer) {
             setStoredToken(tokenFromServer);
         };
 
-        if (statusFromServer === 'failed') {
-            setError('Server Errore');
-            return;
-        };
         if (statusFromServer === 'successful') {
             navigate('/', { replace: true });
         };
-    }, [tokenFromServer, statusFromServer])
+    }, [tokenFromServer, statusFromServer, theme])
 
     const age = Number(ageValue);
     const handleRegistrationClick = async () => {
-        setError('');
         setError('');
 
         if (EmailValue === '') {
@@ -65,8 +66,8 @@ export default function RegisterForm() {
             return;
         };
         
+        storeIsAuth(true);
         await dispatch(fetchRegister({ email: EmailValue, password: passwordValue, age }));
-
         setPasswordValue('');
         setAgeValue('');
         setEmailValue('');
@@ -84,6 +85,7 @@ export default function RegisterForm() {
     
     return (
         <Container>
+            <ThemeChange theme={theme} setTheme={setTheme} />
             <GroupContainer>
                 <Header>
                     <LogoDiv>

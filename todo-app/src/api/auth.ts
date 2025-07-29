@@ -66,3 +66,75 @@ export const fetchRefresh = createAsyncThunk<
         return response.data
     }    
 )
+
+interface ProfileParams {
+    accessToken: string;
+}
+
+interface ProfileResponse {
+    id: number,
+    email: string,
+    age: number,
+    createdAt: string,
+}
+
+export const fetchProfile = createAsyncThunk<
+    ProfileResponse,
+    ProfileParams,
+    { rejectValue: string}
+> (
+    'auth/me',
+    async ({ accessToken }, thunkAPI) => {
+        try {
+            const response = await axios.get(`${API_URL}/auth/me`, 
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    } 
+                }
+            )
+            return response.data;
+        }
+        catch (error) {
+           if (axios.isAxiosError(error)) {
+                if (error.response) {
+                    if (error.response.status === 401) {
+                    return thunkAPI.rejectWithValue('Ошибка авторизации');
+                    }
+                    return thunkAPI.rejectWithValue('Ошибка сервера');
+                }   else {
+                return thunkAPI.rejectWithValue('Произошла непредвиденная ошибка');
+                };
+            } 
+        }
+    }
+);
+
+interface ChangePassParams {
+    accessToken: string;
+    oldPassword: string;
+    newPassword: string;
+}
+
+export const ChangePass = createAsyncThunk<
+    any,
+    ChangePassParams
+> (
+    'auth/change-password',
+    async ({ oldPassword, newPassword, accessToken}, _) => {
+        const response = await axios.post(`${API_URL}/auth/change-password`, 
+            { 
+                oldPassword,
+                newPassword,
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json', 
+                    'Authorization': `Bearer ${accessToken}`
+                } 
+            }
+        )
+        return response.data;
+    }
+);

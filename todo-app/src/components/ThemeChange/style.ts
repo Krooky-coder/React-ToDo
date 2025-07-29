@@ -1,8 +1,9 @@
 import styled from "styled-components";
 
 export const ButtonThemeChange = styled.button`
-  width: 30px;
-  height: 30px;
+  position: absolute;
+  width: 33px;
+  height: 33px;
   display: flex;
   align-items: center;
   justify-content: center;

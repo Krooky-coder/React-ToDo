@@ -1,16 +1,9 @@
 [
   {
-    "id": 1753444297684,
-    "email": "1qweqwe@qwe.qwe",
-    "password": "$2b$10$gtwZ7/R5lMoElX.GEbAV5OkCadOjRvlBibUAcuIOMbIzBZX24pbyC",
-    "age": 19,
-    "createdAt": "2025-07-25T11:51:37.684Z"
-  },
-  {
-    "id": 1753444361325,
-    "email": "2wekubBUJEW@qwd.qweq",
-    "password": "$2b$10$pLlUOnzYrt9c2R7z26tQOuN8/2K1HJLxGYyiHBHZCJjySQIQAWg92",
-    "age": 123,
-    "createdAt": "2025-07-25T11:52:41.325Z"
+    "id": 1753752780791,
+    "email": "qwe123@qwe.qwe",
+    "password": "$2b$10$KRIa3yA9/34APBxbJsru2.MfRb/ZLywQGIuhawbwsPAYHvtpF1JlO",
+    "age": 12,
+    "createdAt": "2025-07-29T01:33:00.791Z"
   }
 ]

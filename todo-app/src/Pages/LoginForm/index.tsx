@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import type { AppDispatch } from '../../store';
 import { fetchLogin } from "../../api/auth";
+import ThemeChange from "../../components/ThemeChange";
 
 export default function LoginForm() {
     const tokenFromServer = useAppSelector(state => state.auth.token);
@@ -15,45 +16,53 @@ export default function LoginForm() {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
 
+    const { initialValue: themeValue, setStoredValue: storeThemeValue } = useLocalStorage<string>('Theme', 'light');
+    const { setStoredValue: storeIsAuth } = useLocalStorage<boolean>('IsAuth', false);
+    
+    const [theme, setTheme] = useState<string>(themeValue);
     const [Error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [passwordValue, setPasswordValue] = useState('');
     const [EmailValue, setEmailValue] = useState('');
-
+    
     useEffect(() => {
+        storeThemeValue(theme);
         if (tokenFromServer) {
             setStoredToken(tokenFromServer);
         }
-        if (statusFromServer === 'failed') {
-            setError('E-mail or Password wrong');
-        };
         if (statusFromServer === 'successful') {
             navigate('/', { replace: true });
         };
-    }, [tokenFromServer, statusFromServer])
-
+    }, [tokenFromServer, statusFromServer, theme]);
+    
     const handleLoginClick = async () => {
         setError('');
-        setError('');
+        
+        if (statusFromServer === 'successful') {
+            navigate('/', { replace: true });
+        };
 
+        if (statusFromServer === 'failed') {
+            setError('E-mail or Password wrong');
+        };
+        
         if (EmailValue === '') {
-            setError(`Email Form can't be empty`);
+            setError(`Email form can't be empty`);
             return;
         };
         
         if (passwordValue === '') {
-            setError(`Password Form can't be empty`);
+            setError(`Password form can't be empty`);
             return;
         };
         
+        storeIsAuth(true);
         await dispatch(fetchLogin({ email: EmailValue, password: passwordValue }));
-
         setPasswordValue('');
         setEmailValue('');
 
     };
 
-    
     const handleShowPassword = () => {
         setShowPassword(!showPassword);
     }
@@ -63,9 +72,10 @@ export default function LoginForm() {
             handleLoginClick();
         };
     };
-    
+
     return (
         <Container>
+            <ThemeChange theme={theme} setTheme={setTheme}/>
             <GroupContainer>
                 <Header>
                     <LogoDiv>
@@ -86,7 +96,7 @@ export default function LoginForm() {
                         value={EmailValue}
                         onChange={(e) => setEmailValue(e.target.value)}
                         onKeyDown={handleKeyDown} 
-                    />
+                        />
                     <LogForm
                         value={passwordValue}
                         onChange={(e) => setPasswordValue(e.target.value)}
@@ -94,7 +104,7 @@ export default function LoginForm() {
                         placeholder="Password"
                         minLength={6}
                         onKeyDown={handleKeyDown} 
-                    />
+                        />
                     <ShowPassBtn onClick={handleShowPassword}>
                         <EyeIcon>
                             {showPassword ? OPEN_EYE_PATHS : CLOSED_EYE_PATHS}

@@ -1,6 +1,6 @@
 import styled from "styled-components"
 
-const Container = styled.div`
+export const Container = styled.div`
   border: 2px solid ${props => props.theme.main};
   border-radius: 15px;
   background: ${props => props.theme.colors.background};
@@ -9,4 +9,9 @@ const Container = styled.div`
   width: 60%;
   color: ${props => props.theme.colors.text};
 `
-export { Container }
+export const Header = styled.div`
+    position: relative;
+    font-size: 35px;
+    color: ${props => props.theme.colors.text};
+    margin-bottom: 50px;
+`

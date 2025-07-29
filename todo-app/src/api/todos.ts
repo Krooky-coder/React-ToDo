@@ -29,6 +29,7 @@ export const fetchTodos = createAsyncThunk<
     try {
       const response = await axios.get(`${API_URL}/todos?page=${page}&limit=${limit}`, {
         headers: {
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`
         }
     });
@@ -36,7 +37,10 @@ export const fetchTodos = createAsyncThunk<
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
-          return thunkAPI.rejectWithValue('Ошибка');
+          if (error.response.status === 401) {
+            return thunkAPI.rejectWithValue('Ошибка авторизации');
+          }
+          return thunkAPI.rejectWithValue('Ошибка сервера');
         } else {
           return thunkAPI.rejectWithValue('Ошибка при загрузке задач');
         }

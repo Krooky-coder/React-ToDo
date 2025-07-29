@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type TodoItem from '../TodoItem'
-import { fetchTodos, patchTodos } from '../api/todos';
+import { fetchTodos, patchTodos, postTodos } from '../api/todos';
 
 interface CounterState {
     todos: Array<TodoItem>;
@@ -55,6 +55,9 @@ const todoSlice = createSlice({
             })
             .addCase(patchTodos.pending, (state) => {
                 state.onLoading = false
+            })
+            .addCase(postTodos.rejected, (state) => {
+                state.error = 'Ошибка авторизации'
             })
     }
 })
