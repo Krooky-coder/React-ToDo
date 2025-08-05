@@ -6,7 +6,7 @@ export default function useLocalStorage<T> (key: string, defaultValue: T) {
       localStorage.setItem(key, JSON.stringify(newValue));
     };
   
-    const removeValue = (key: string) => {
+    const removeValue = () => {
       localStorage.removeItem(key);
     };
   

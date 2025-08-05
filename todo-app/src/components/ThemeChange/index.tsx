@@ -1,19 +1,24 @@
+import useLocalStorage from '../../utils/localStorage';
 import { ButtonThemeChange, ToggleIcon } from './style';
 
 interface ThemeChangeProps {
-    setTheme: ( val:string ) => void;
     theme: string;
+    setTheme: ( val:string ) => void;
 };
 
-export default function ThemeChange ( { setTheme, theme }: ThemeChangeProps ) {
+export default function ThemeChange ({ setTheme }: ThemeChangeProps ) {
+    const { initialValue: themeValue, setStoredValue: storeThemeValue} = useLocalStorage<string>('Theme', 'light');
+
     function handleToggleTheme () {
-        setTheme(theme === 'light' ? 'dark' : 'light')
+        const newTheme = themeValue === 'light' ? 'dark' : 'light'
+        storeThemeValue(newTheme);
+        setTheme(newTheme);
     };
     
     return (
         <ButtonThemeChange onClick={handleToggleTheme}>
             <ToggleIcon>
-                {theme === 'light' ? (<path d={ lightSvg } />)
+                {themeValue === 'light' ? (<path d={ lightSvg } />)
                 : (<path d={ darkkSvg } />)}
             </ToggleIcon>
         </ButtonThemeChange>

@@ -5,13 +5,15 @@ export default interface TodoItem {
     createdAt: string,
   }
 
-  declare module 'styled-components' {
-    export interface DefaultTheme {
-      main: string,
-      colors: {
-        primary?: string,
-        secondary?: string,
-        text: string,
-        background: string,
-  },
+declare module 'styled-components' {
+  export interface DefaultTheme {
+    main: string,
+    colors: {
+      borderColors: string;
+      primary?: string,
+      secondary?: string,
+      text: string,
+      background: string,
+      error: string;
+},
 }}

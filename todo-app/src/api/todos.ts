@@ -4,21 +4,6 @@ import type TodoItem from '../TodoItem';
 
 const API_URL = 'http://localhost:3001';
 
-export const instance = axios.create({
-  baseURL: API_URL,
-  headers: {
-    "Content-Type": 'application/json',
-  }
-}) 
-
-instance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("Access Token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
 interface FetchTodosParams {
   page: number;
   limit: number;

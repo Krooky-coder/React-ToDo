@@ -4,11 +4,10 @@ import EditTodo from '../EditTodo/index';
 import { Pagination, Stack } from "@mui/material";
 import { useEffect, useState } from 'react';
 import { deleteTodos, fetchTodos, patchTodos } from '../../api/todos';
-import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '../../store';
 import useLocalStorage from '../../utils/localStorage';
 import { switchStatus } from '../../store/todoSlice';
 import { useAppSelector } from '../../utils/useAppSeleсtor';
+import { useAppDispatch } from '../../utils/useAppDispatch';
 
 interface TodoListProps {
     sort: string;
@@ -22,18 +21,19 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
     const onError = useAppSelector((state) => state.todos.error);
     const loadingStatus = useAppSelector((state) => state.todos.onLoading);
     const tasksFromServer = useAppSelector((state) => state.todos.todos);
+
+    const taskToRender = [...tasksFromServer];
     
-    const { initialValue: accessToken} = useLocalStorage('Access Token', '');
+    const { initialValue: accessToken} = useLocalStorage<string>('Access Token', '');
     const { initialValue: CurrentPage, setStoredValue: storeCurrentPage } = useLocalStorage<number>('CurrentPage', currentPageFromServer);
     const { initialValue: LocalPagelimit, setStoredValue: storePagelimit } = useLocalStorage<number>('Limit', pageLimitFromServer);
     
-    const [limit, setLimit] = useState(LocalPagelimit);
+    const [limit, setLimit] = useState<number>(LocalPagelimit);
     const [page, setPage] = useState<number>(CurrentPage);
-    const [pageQty, setpageQty] = useState(pageQtyFromServer);
-    const dispatch = useDispatch<AppDispatch>();
+    const [pageQty, setpageQty] = useState<number>(pageQtyFromServer);
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
-        dispatch(fetchTodos({page, limit, accessToken}));
         storePagelimit(limit);
         storeCurrentPage(page);
         setpageQty(pageQtyFromServer);
@@ -42,25 +42,23 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
         };
     }, [page, limit, pageQtyFromServer, onError]);
 
-    const handleOnChangePage = (_: unknown, num: number) => {
+    const handleOnChangePage = (_: unknown, num: number): void => {
         setPage(num);
     };
     
-    const handleClickSetDone = async (itemId: string, completed: boolean) => {
+    const handleClickSetDone = async (itemId: string, completed: boolean): Promise<void> => {
         await dispatch(patchTodos({ id: itemId, completed: !completed, accessToken }));
         await dispatch(switchStatus({ itemId, completed }));
     };
     
-    const handleClickDelete = async (itemId: string) => {
+    const handleClickDelete = async (itemId: string): Promise<void> => {
         await dispatch(deleteTodos({ id: itemId, accessToken }));
         await dispatch(fetchTodos({page, limit, accessToken}));
     };
     
-    const handleClickSort = async () => {
+    const handleClickSort = async (): Promise<void> => {
         setSort(sort === 'new' ? 'old' : 'new')
     };
-    
-    const taskToRender = [...tasksFromServer];
 
     if (sort === 'new') {
         taskToRender.sort((a: TodoItem, b: TodoItem) => {

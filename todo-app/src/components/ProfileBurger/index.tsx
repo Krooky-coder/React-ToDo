@@ -1,21 +1,23 @@
 import { useState } from "react";
 import { BURGER_ICON, PROFILE_ICON, LOGOUT_ICON, TasksIconPaths } from "../../assets/icons";
 import { Container, ProfileBtn, ProfileIcon, ProfileNav } from "./style";
-import { useDispatch } from "react-redux";
 import useLocalStorage from "../../utils/localStorage";
 import { logoutUser } from "../../store/authSlice";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../utils/useAppDispatch";
 
 export default function ProfileBurger() {
     const [isOpen, setIsOpen] = useState(false);
     
-    const {removeValue: removeAccessToken } = useLocalStorage(`Access Token`, '');
+    const {removeValue: removeAccessToken } = useLocalStorage<string>(`Access Token`, '');
+    const {removeValue: removeRefreshToken } = useLocalStorage<string>(`Refresh Token`, '');
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
-    const handleClickLogout = () => {
-        removeAccessToken(`Access Token`);
+    const handleClickLogout = (): void => {
+        removeAccessToken();
+        removeRefreshToken();
         dispatch(logoutUser());
         setIsOpen(false);
         navigate("/login", {replace: true});
@@ -48,6 +50,6 @@ export default function ProfileBurger() {
                 </>
             }
         </Container>
-    )
-}
+    );
+};
 

@@ -1,4 +1,3 @@
-import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const Button = styled.button`
@@ -8,7 +7,7 @@ export const Button = styled.button`
     border-radius: 5px;
     /* Color the border and text with theme.main */
     color: ${props => props.theme.colors.text};
-    border: 2px solid ${props => props.theme.main};
+    border: 2px solid ${props => props.theme.colors.borderColors};
     background: ${props => props.theme.colors.primary};
 `;
 
@@ -30,7 +29,7 @@ export const ButtonPages = styled.button<CustomButton>`
     font-size: small;
     border: black solid 1px;
     text-align: center;
-    background-color: ${(props) => (props.$active ? props.theme.main : 'white')};
+    background-color: ${(props) => (props.$active ? props.theme.main : props.theme.colors.primary)};
     color: ${(props) => (props.$active ? props.theme.colors.text : props.theme.colors.secondary)};    
 `
 

@@ -1,37 +1,36 @@
 import { Container, GroupContainer, ShowPassBtn, ErrorSpan, Header, LogoDiv, LogoSpan, LogoBtnContainer, LogoBtn, Body, LogForm, EyeIcon, RegisterBtn } from "./style"
 import { OPEN_EYE_PATHS, CLOSED_EYE_PATHS } from '../../assets/icons'
 import { useEffect, useState, type KeyboardEvent} from 'react';
-import { useDispatch } from "react-redux";
 import { fetchRegister } from "../../api/auth";
-import type { AppDispatch } from '../../store';
 import useLocalStorage from "../../utils/localStorage";
 import { useAppSelector } from "../../utils/useAppSeleсtor";
 import { useNavigate } from 'react-router-dom';
-import ThemeChange from "../../components/ThemeChange";
+import { useAppDispatch } from "../../utils/useAppDispatch";
 
 export default function RegisterForm() { 
+    const refreshFromServer = useAppSelector(state => state.auth.refreshToken);
     const tokenFromServer = useAppSelector(state => state.auth.token);
     const statusFromServer = useAppSelector(state => state.auth.status);
-    const {setStoredValue: setStoredToken} = useLocalStorage('Access Token', '')
-    const dispatch = useDispatch<AppDispatch>();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
-
-    const { initialValue: themeValue, setStoredValue: storeThemeValue } = useLocalStorage<string>('Theme', 'light');
+    
+    const {setStoredValue: setStoredToken} = useLocalStorage<string>('Access Token', '')
+    const {setStoredValue: setStoredRefreshToken} = useLocalStorage<string>('Refresh Token', '');
             
-    const [theme, setTheme] = useState<string>(themeValue);
-    const [Error, setError] = useState('');
-    const [passwordValue, setPasswordValue] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [EmailValue, setEmailValue] = useState('');
+    const [Error, setError] = useState<string>('');
+    const [passwordValue, setPasswordValue] = useState<string>('');
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [EmailValue, setEmailValue] = useState<string>('');
     const [ageValue, setAgeValue] = useState<number | string>('');
 
     useEffect(() => {
-        storeThemeValue(theme);
         if (tokenFromServer) {
             setStoredToken(tokenFromServer);
         };
-
-    }, [tokenFromServer, statusFromServer, theme])
+        if (refreshFromServer) {
+            setStoredRefreshToken(refreshFromServer);
+        }
+    }, [tokenFromServer, statusFromServer])
     
     const age = Number(ageValue);
     const handleRegistrationClick = async () => {
@@ -62,9 +61,12 @@ export default function RegisterForm() {
             return;
         };
         
-        await dispatch(fetchRegister({ email: EmailValue, password: passwordValue, age }));
-        navigate('/', { replace: true });
-
+        try {
+            await dispatch(fetchRegister({ email: EmailValue, password: passwordValue, age }));
+            navigate('/', { replace: true });
+        }   catch (error) {
+            console.error(error);
+        }
         
         setPasswordValue('');
         setAgeValue('');
@@ -83,7 +85,6 @@ export default function RegisterForm() {
     
     return (
         <Container>
-            <ThemeChange theme={theme} setTheme={setTheme} />
             <GroupContainer>
                 <Header>
                     <LogoDiv>

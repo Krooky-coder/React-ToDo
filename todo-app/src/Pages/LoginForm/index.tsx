@@ -3,36 +3,35 @@ import { Container, GroupContainer, ShowPassBtn, ErrorSpan, Header, LogoDiv, Log
 import { OPEN_EYE_PATHS, CLOSED_EYE_PATHS } from '../../assets/icons'
 import { useAppSelector } from "../../utils/useAppSeleсtor";
 import useLocalStorage from "../../utils/localStorage";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import type { AppDispatch } from '../../store';
 import { fetchLogin } from "../../api/auth";
-import ThemeChange from "../../components/ThemeChange";
+import { useAppDispatch } from "../../utils/useAppDispatch";
 
 export default function LoginForm() {
+    const refreshFromServer = useAppSelector(state => state.auth.refreshToken);
     const tokenFromServer = useAppSelector(state => state.auth.token);
     const statusFromServer = useAppSelector(state => state.auth.status);
     const erroeMessage = useAppSelector(state => state.auth.errorMessage);
     
     const navigate = useNavigate();
-    const dispatch = useDispatch<AppDispatch>();
+    const dispatch = useAppDispatch();
     
-    const {setStoredValue: setStoredToken} = useLocalStorage('Access Token', '');
-    const { initialValue: themeValue, setStoredValue: storeThemeValue } = useLocalStorage<string>('Theme', 'light');
+    const {setStoredValue: setStoredToken} = useLocalStorage<string>('Access Token', '');
+    const {setStoredValue: setStoredRefreshToken} = useLocalStorage<string>('Refresh Token', '');
     
-    const [theme, setTheme] = useState<string>(themeValue);
-    const [Error, setError] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [passwordValue, setPasswordValue] = useState('');
-    const [EmailValue, setEmailValue] = useState('');
+    const [Error, setError] = useState<string>('');
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [passwordValue, setPasswordValue] = useState<string>('');
+    const [EmailValue, setEmailValue] = useState<string>('');
     
     useEffect(() => {
-        storeThemeValue(theme);
         if (tokenFromServer) {
             setStoredToken(tokenFromServer);
         }
-
-    }, [tokenFromServer, statusFromServer, theme]);
+        if (refreshFromServer) {
+            setStoredRefreshToken(refreshFromServer);
+        }
+    }, [refreshFromServer, tokenFromServer, statusFromServer]);
     
     const handleLoginClick = async () => {
         setError('');
@@ -47,8 +46,12 @@ export default function LoginForm() {
             return;
         };
         
-        await dispatch(fetchLogin({ email: EmailValue, password: passwordValue }));
-        navigate('/');
+        try {
+            await dispatch(fetchLogin({ email: EmailValue, password: passwordValue }));
+            navigate('/');
+        }   catch (error) {
+            console.error(error);
+        };
         
         if (erroeMessage === 'E-mail or Password wrong') {
             setError(erroeMessage);
@@ -59,11 +62,11 @@ export default function LoginForm() {
 
     };
 
-    const handleShowPassword = () => {
+    const handleShowPassword = (): void => {
         setShowPassword(!showPassword);
     }
 
-    function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    function handleKeyDown(e: KeyboardEvent<HTMLInputElement>): void {
         if (e.key === 'Enter') {
             handleLoginClick();
         };
@@ -71,7 +74,6 @@ export default function LoginForm() {
 
     return (
         <Container>
-            <ThemeChange theme={theme} setTheme={setTheme}/>
             <GroupContainer>
                 <Header>
                     <LogoDiv>

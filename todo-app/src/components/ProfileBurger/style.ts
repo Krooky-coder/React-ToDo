@@ -6,7 +6,7 @@ export const ProfileIcon = styled.svg.attrs({
     viewBox: "0 0 24 24",
   })` 
     fill: none;
-    stroke: #323232;
+    stroke: ${props => props.theme.colors.borderColors};
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -32,7 +32,7 @@ export const ProfileBtn = styled.button`
     }
 `
 export const ProfileNav = styled(NavLink)`
-    background-color: inherit;
+    background-color: ${props => props.theme.colors.background};
     display: flex;
     justify-content: center;
     align-items: center;
@@ -51,7 +51,6 @@ export const ProfileNav = styled(NavLink)`
     }
 `
 
-
 export const Container = styled.div`
     display: flex;
     flex-direction: column;
@@ -59,7 +58,7 @@ export const Container = styled.div`
     align-items: center;
     border-radius: 5px;
     width: 33px;
-    border: 1px solid black;
+    border: 1px solid ${props => props.theme.colors.borderColors};
     background-color: inherit;
     padding: 0;
     right: 0;

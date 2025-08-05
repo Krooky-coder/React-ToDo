@@ -3,8 +3,6 @@ import { NavLink } from 'react-router-dom';
 
 export const Container = styled.section`
     margin: auto;
-    width: 600px;
-    height: 350px;
     border: solid 1px lightgray;
     border-radius: 20px;
     box-shadow: 0 5px 15px lightgray;
@@ -124,6 +122,7 @@ export const LoginBtn = styled.button`
     color: white;
     border-radius: 0px;
     margin: 0;
+    margin-bottom: 40px;
 
     &:focus {
         outline: none;

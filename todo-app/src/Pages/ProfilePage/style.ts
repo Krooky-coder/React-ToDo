@@ -6,7 +6,7 @@ export const Container = styled.section`
   background: ${props => props.theme.colors.background};
   padding: 0px;
   margin: 0px;
-  width: 60%;
+  height: 650px;
   color: ${props => props.theme.colors.text};
 `
 

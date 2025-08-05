@@ -1,33 +1,31 @@
-import {  useEffect, useState, type ChangeEvent, type KeyboardEvent} from 'react';
+import {  useState, type ChangeEvent, type KeyboardEvent} from 'react';
 import { Button, CustomInput, SpanError, Container} from './style';
-import { useDispatch } from 'react-redux';
-import type { AppDispatch } from '../../store';
 import { postTodos, fetchTodos } from '../../api/todos';
 import useLocalStorage from '../../utils/localStorage';
-import { useAppSelector } from '../../utils/useAppSeleсtor';
+import { useAppDispatch } from '../../utils/useAppDispatch';
 
 export default function AddTodo () {
     const [inputValue, setInputValue] = useState<string>('');
     const [onError, setOnError] = useState<boolean>(false);
-    const dispatch = useDispatch<AppDispatch>();
 
-    const { initialValue: accessToken } = useLocalStorage('Access Token', '');
-    const { initialValue: page} = useLocalStorage('CurrentPage', 1);
-    const { initialValue: limit} = useLocalStorage('Limit', 2);
+    const dispatch = useAppDispatch();
 
-    
-    function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
+    const { initialValue: accessToken } = useLocalStorage<string>('Access Token', '');
+    const { initialValue: page} = useLocalStorage<number>('CurrentPage', 1);
+    const { initialValue: limit} = useLocalStorage<number>('Limit', 2);
+
+    function handleOnChange(e: ChangeEvent<HTMLInputElement>): void {
         setInputValue(e.target.value);
     };
 
-    function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    function handleKeyDown(e: KeyboardEvent<HTMLInputElement>): void {
         if (e.key === 'Enter') {
             handleOnClick();
         };
     };
 
-    async function handleOnClick () {
-        if (inputValue) {
+    async function handleOnClick (): Promise<void>{
+        if (inputValue.trim()) {
             setOnError(false);
             await dispatch(postTodos({ text: inputValue, accessToken }));
             await dispatch(fetchTodos({ page, limit, accessToken }));

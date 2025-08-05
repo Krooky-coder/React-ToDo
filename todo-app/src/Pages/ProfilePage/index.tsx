@@ -1,45 +1,30 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAppSelector } from "../../utils/useAppSeleсtor"
-import { useDispatch } from "react-redux";
-import { ChangePass, fetchProfile, fetchRefresh } from "../../api/auth";
+import { ChangePass } from "../../api/auth";
 import useLocalStorage from "../../utils/localStorage";
-import { type AppDispatch } from "../../store";
 import { Container, Header, ErrorSpan, ProfileDiv, Span, Ul, InputsDiv, ChangePassDiv, ChangePassBtn, PassP, CustomInput } from "./style";
-import ThemeChange from "../../components/ThemeChange";
 import ProfileBurger from "../../components/ProfileBurger";
-import { TokenIsExpired } from "../../utils/RefreshToken";
+import { useAppDispatch } from "../../utils/useAppDispatch";
 
 export const ProfilePage = () => {
-    const { initialValue: themeValue, setStoredValue: storeThemeValue } = useLocalStorage<string>('Theme', 'light');
-    const { initialValue: accessToken, setStoredValue: storeAccessToken} = useLocalStorage('Access Token', '');
-    const { initialValue : refreshToken } = useLocalStorage('Refresh Token', '');
+    const { initialValue: accessToken} = useLocalStorage<string>('Access Token', '');
 
     const profile = useAppSelector(state => state.auth.user);
     const loadingStatus = useAppSelector((state) => state.todos.onLoading);
     const status = useAppSelector(state => state.auth.status);
     const erroeMessage = useAppSelector(state => state.auth.errorMessage);
-    const dispatch = useDispatch<AppDispatch>();
+    const dispatch = useAppDispatch();
 
-    const [theme, setTheme] = useState<string>(themeValue);
-    const [oldPassword, setOldPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [newPasswordAgain, setNewPasswordAgain] = useState('');
-    const [message, setMessage] = useState('');
+    const [oldPassword, setOldPassword] = useState<string>('');
+    const [newPassword, setNewPassword] = useState<string>('');
+    const [newPasswordAgain, setNewPasswordAgain] = useState<string>('');
+    const [message, setMessage] = useState<string>('');
 
     const clearAllForms = () => {
         setOldPassword('');
         setNewPassword('');
         setNewPasswordAgain('');
     }
-
-    useEffect(() => {
-        // if (TokenIsExpired(accessToken) && tokenFromServer) {
-        //     dispatch(fetchRefresh({ refreshToken }));
-        //     storeAccessToken(tokenFromServer);
-        // }    
-        // dispatch(fetchProfile({ accessToken }));
-        storeThemeValue(theme);
-    }, [theme, accessToken])
 
     const handlePassChangeClick = async () => {
         if (erroeMessage === 'Ошибка сервера') {
@@ -71,10 +56,6 @@ export const ProfilePage = () => {
         clearAllForms();
     }
 
-    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-        e.preventDefault(); 
-    };
-
     return (
     <>  
         {loadingStatus ? (
@@ -83,7 +64,6 @@ export const ProfilePage = () => {
                 <>
                 <Container>
                     <Header>
-                        <ThemeChange theme={theme} setTheme={setTheme}/>
                         <Span>Your profile</Span>
                         <ProfileBurger />
                     </Header>
@@ -102,7 +82,8 @@ export const ProfilePage = () => {
                         <InputsDiv>
                             <div>
                                 <PassP>Old password</PassP>
-                                <CustomInput 
+                                <CustomInput
+                                type="password" 
                                 name="oldPass"
                                 value={oldPassword}
                                 onChange={(e) => setOldPassword(e.target.value)}
@@ -111,6 +92,7 @@ export const ProfilePage = () => {
                             <div>
                                 <PassP>New password</PassP>
                                 <CustomInput 
+                                type="password"
                                 name="newPass"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
@@ -119,7 +101,8 @@ export const ProfilePage = () => {
                             <div>
                                 <PassP>Again new password</PassP>
                                 <CustomInput 
-                                onPaste={handlePaste}
+                                onPaste={(e) => e.preventDefault()}
+                                type="password"
                                 name="newPass"
                                 value={newPasswordAgain}
                                 onChange={(e) => setNewPasswordAgain(e.target.value)}

@@ -1,37 +1,43 @@
 import { useEffect, useState } from "react";
-import { useAppDispath } from "./useAppDispatch";
-import { fetchProfile } from "../api/auth";
+import { useAppDispatch } from "./useAppDispatch";
+import { fetchProfile, fetchRefresh } from "../api/auth";
 import useLocalStorage from "./localStorage";
+import { TokenIsExpired } from "./RefreshToken";
+import useRefreshToken from "./useRefreshToken";
 
-export default function useAuth(): {isAuth: boolean, loading: boolean} {
-    
-    const { initialValue: accessToken } = useLocalStorage('Access Token', '');
-    const dispatch = useAppDispath();
+export default function useAuth(): { isAuth: boolean; loading: boolean } {
+    const dispatch = useAppDispatch();
+    const { currentToken } = useRefreshToken();
     const [isAuth, setIsAuth] = useState(false);
     const [loading, setLoading] = useState(true);
-    
+
     const checkAuth = async () => {
-        setLoading(true);
-        try {
-            const result = await dispatch(fetchProfile({ accessToken }));
-            if (fetchProfile.fulfilled.match(result)) {
-                setIsAuth(true);
-                setLoading(false);
-            }
-            if (fetchProfile.rejected.match(result)) {
-                throw new Error;
-            }
-            
-        } catch (err) {
-            console.log(err)
+        if (!currentToken) {
             setIsAuth(false);
             setLoading(false);
+            return;
         }
-    }
+
+        setLoading(true);
+        try {
+            const profileResult = await dispatch(fetchProfile({ accessToken: currentToken }));
+            
+            if (fetchProfile.fulfilled.match(profileResult)) {
+                setIsAuth(true);
+            } else {
+                throw new Error('Failed to fetch profile');
+            }
+        } catch (err) {
+            console.error('Authentication error:', err);
+            setIsAuth(false);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        checkAuth()
-    },[])
-    
-    return {isAuth, loading};
+        checkAuth();
+    }, [currentToken]); // Зависимость от currentToken
+
+    return { isAuth, loading };
 }
