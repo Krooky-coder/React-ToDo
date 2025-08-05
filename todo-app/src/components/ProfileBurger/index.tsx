@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BURGER_ICON, PROFILE_ICON, LOGOUT_ICON, TasksIconPaths } from "../../assets/icons";
 import { Container, ProfileBtn, ProfileIcon, ProfileNav } from "./style";
 import { useDispatch } from "react-redux";
@@ -10,20 +10,14 @@ export default function ProfileBurger() {
     const [isOpen, setIsOpen] = useState(false);
     
     const {removeValue: removeAccessToken } = useLocalStorage(`Access Token`, '');
-    const { setStoredValue: storeIsAuth } = useLocalStorage<boolean>('IsAuth', false);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    useEffect(() => {
-
-    },[])
 
     const handleClickLogout = () => {
         removeAccessToken(`Access Token`);
         dispatch(logoutUser());
         setIsOpen(false);
-        storeIsAuth(false);
         navigate("/login", {replace: true});
     };
 

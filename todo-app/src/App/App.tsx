@@ -9,11 +9,27 @@ import { blackTheme, lightTheme } from '../Theme';
 import LoginForm from '../Pages/LoginForm/index'
 import { ProfilePage } from '../Pages/ProfilePage';
 import ProtectedRoute from '../components/ProtectedRoute.tsx';
-
+import { useEffect } from 'react';
+import useAuth from '../utils/useAuth.ts';
+import { useAppDispath } from '../utils/useAppDispatch.ts';
+import { fetchProfile } from '../api/auth.ts';
+import { fetchTodos } from '../api/todos.ts';
 
 function App() {
   const { initialValue: themeValue } = useLocalStorage<string>('Theme', 'light');
+  const { initialValue: accessToken} = useLocalStorage('Access Token', '');
+
+  const dispatch = useAppDispath()
   const themeToProvide = themeValue === 'light' ? lightTheme : blackTheme;
+
+  // const chekAuth = async () => {
+  //         await dispatch(fetchProfile({ accessToken }))
+  //         await dispatch(fetchTodos({ page: 1, limit: 2, accessToken }))
+  //     }
+  
+  //     useEffect(() => {
+  //         chekAuth()
+  //     },[accessToken])
 
   return (
     <ThemeProvider theme={themeToProvide}>

@@ -1,5 +1,5 @@
 import { useEffect, useState, type KeyboardEvent } from "react";
-import { Container, GroupContainer, ShowPassBtn, ErrorSpan, Header, LogoDiv, LogoSpan, LogoBtnContainer, LogoBtn, Body, LogForm, ShowPass, EyeIcon, LoginBtn } from "./style"
+import { Container, GroupContainer, ShowPassBtn, ErrorSpan, Header, LogoDiv, LogoSpan, LogoBtnContainer, LogoBtn, Body, LogForm, EyeIcon, LoginBtn } from "./style"
 import { OPEN_EYE_PATHS, CLOSED_EYE_PATHS } from '../../assets/icons'
 import { useAppSelector } from "../../utils/useAppSeleсtor";
 import useLocalStorage from "../../utils/localStorage";
@@ -12,12 +12,13 @@ import ThemeChange from "../../components/ThemeChange";
 export default function LoginForm() {
     const tokenFromServer = useAppSelector(state => state.auth.token);
     const statusFromServer = useAppSelector(state => state.auth.status);
-    const {setStoredValue: setStoredToken} = useLocalStorage('Access Token', '');
+    const erroeMessage = useAppSelector(state => state.auth.errorMessage);
+    
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
-
+    
+    const {setStoredValue: setStoredToken} = useLocalStorage('Access Token', '');
     const { initialValue: themeValue, setStoredValue: storeThemeValue } = useLocalStorage<string>('Theme', 'light');
-    const { setStoredValue: storeIsAuth } = useLocalStorage<boolean>('IsAuth', false);
     
     const [theme, setTheme] = useState<string>(themeValue);
     const [Error, setError] = useState('');
@@ -30,21 +31,11 @@ export default function LoginForm() {
         if (tokenFromServer) {
             setStoredToken(tokenFromServer);
         }
-        if (statusFromServer === 'successful') {
-            navigate('/', { replace: true });
-        };
+
     }, [tokenFromServer, statusFromServer, theme]);
     
     const handleLoginClick = async () => {
         setError('');
-        
-        if (statusFromServer === 'successful') {
-            navigate('/', { replace: true });
-        };
-
-        if (statusFromServer === 'failed') {
-            setError('E-mail or Password wrong');
-        };
         
         if (EmailValue === '') {
             setError(`Email form can't be empty`);
@@ -56,8 +47,13 @@ export default function LoginForm() {
             return;
         };
         
-        storeIsAuth(true);
         await dispatch(fetchLogin({ email: EmailValue, password: passwordValue }));
+        navigate('/');
+        
+        if (erroeMessage === 'E-mail or Password wrong') {
+            setError(erroeMessage);
+        };
+        
         setPasswordValue('');
         setEmailValue('');
 

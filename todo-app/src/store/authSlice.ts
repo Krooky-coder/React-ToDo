@@ -10,19 +10,19 @@ interface User {
 }
 
 interface AuthState {
-    isAuth: boolean;
+    refreshToken: string | null;
     user: User | null;
     token: string | null;
-    refresh: string | null;
     status: 'idle' | 'loading' | 'failed' | 'successful';
- }
+    errorMessage?: string; 
+}
 
 const initialState: AuthState = {
-    isAuth: false,
+    refreshToken: null,
     user: null,
-    refresh: null,
     token: null,
-    status: 'idle'
+    status: 'idle',
+    errorMessage: undefined,
 }
 
 const authSlice = createSlice({
@@ -30,9 +30,9 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         logoutUser(state) {
-            state.token = '',
+            state.user = null,
+            state.token = null,
             state.status = 'idle';
-            state.isAuth = false;
         },
     },
     extraReducers: (builder) => {
@@ -46,40 +46,56 @@ const authSlice = createSlice({
             })
             .addCase(fetchProfile.rejected, (state, action) => {
                 state.status = 'failed';
+                if ( action.payload === 'Ошибка сервера' ) {
+                    state.errorMessage = 'Ошибка сервера'
+                }
                 if ( action.payload === 'Ошибка авторизации' ) {
-                    state.isAuth = false;
+                    state.errorMessage = 'Ошибка авторизации'
+                    state.token = null;
                 }
             })
             .addCase(fetchTodos.rejected, (state, action) => {
+                state.status = 'failed';
+                if ( action.payload === 'Ошибка сервера' ) {
+                    state.errorMessage = action.payload
+                }
                 if ( action.payload === 'Ошибка авторизации' ) {
-                    state.isAuth = false;
+                    state.errorMessage = action.payload
+                    state.token = null;
                 }
             })
+            .addCase(fetchTodos.fulfilled, (state, action) => {
+                state.status = 'successful';
+                }
+            )
             .addCase(fetchRegister.pending, (state) => {
                 state.status = 'loading';
             })
             .addCase(fetchRegister.fulfilled, (state, action) => {
                 state.status = 'successful';
-                state.isAuth = true,
                 state.token = action.payload.accessToken;
-                state.refresh = action.payload.refreshToken;
+                state.refreshToken = action.payload.refreshToken;
             })
             .addCase(fetchRegister.rejected, (state) => {
                 state.status = 'failed';
+                state.errorMessage = 'E-mail or Password wrong';
             })
             .addCase(fetchLogin.pending, (state) => {
                 state.status = 'loading';
             })
             .addCase(fetchLogin.fulfilled, (state, action) => {
                 state.status = 'successful';
-                state.isAuth = true,
                 state.token = action.payload.accessToken;
+                state.refreshToken = action.payload.refreshToken;
             })
             .addCase(fetchLogin.rejected, (state) => {
                 state.status = 'failed';
             })
             .addCase(fetchRefresh.fulfilled, (state, action) => {
                 state.token = action.payload.accessToken;
+            })
+            .addCase(fetchRefresh.rejected, (state, action) => {
+                state.errorMessage = action.payload;
             })
             .addCase(ChangePass.rejected, (state) => {
                 state.status = 'failed';

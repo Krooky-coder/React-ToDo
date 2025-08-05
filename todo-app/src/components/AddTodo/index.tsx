@@ -15,13 +15,7 @@ export default function AddTodo () {
     const { initialValue: page} = useLocalStorage('CurrentPage', 1);
     const { initialValue: limit} = useLocalStorage('Limit', 2);
 
-    const errorMessage = useAppSelector((state) => state.todos.error);
-    const status = useAppSelector((state) => state.auth.status);
     
-    useEffect(() => {
-        dispatch(fetchTodos({page, limit, accessToken}));
-    },[errorMessage, status])
-
     function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
         setInputValue(e.target.value);
     };

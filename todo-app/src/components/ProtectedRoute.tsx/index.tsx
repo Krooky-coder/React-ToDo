@@ -1,21 +1,25 @@
-import { type ReactNode } from "react"
+import { useEffect, type ReactNode } from "react"
 import { Navigate } from 'react-router-dom';
-import useLocalStorage from "../../utils/localStorage";
+import useAuth from "../../utils/useAuth";
 
 interface Props {
     children: ReactNode;
 }
 
-export default function ProtectedRoute ({ children }:Props) {
-    const { initialValue: isAuth } = useLocalStorage('IsAuth', false);
+export default function ProtectedRoute({ children }: Props) {
+    const {isAuth, loading} = useAuth();
 
-    return <>
-        {isAuth ? (
-            children
-        ) : (
-            <>
-                <Navigate to="/login" replace />
-            </>
-        )} 
-    </>
+    return (
+        <>
+            {isAuth ? (
+                children
+            ) : ( 
+                loading ? (
+                    <div>loading</div>
+                ) : (
+                    <Navigate to="/login" replace />
+                )
+            )}
+        </>
+    )
 }

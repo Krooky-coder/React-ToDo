@@ -17,7 +17,6 @@ export default function RegisterForm() {
     const navigate = useNavigate();
 
     const { initialValue: themeValue, setStoredValue: storeThemeValue } = useLocalStorage<string>('Theme', 'light');
-    const { setStoredValue: storeIsAuth } = useLocalStorage<boolean>('IsAuth', false);
             
     const [theme, setTheme] = useState<string>(themeValue);
     const [Error, setError] = useState('');
@@ -32,15 +31,12 @@ export default function RegisterForm() {
             setStoredToken(tokenFromServer);
         };
 
-        if (statusFromServer === 'successful') {
-            navigate('/', { replace: true });
-        };
     }, [tokenFromServer, statusFromServer, theme])
-
+    
     const age = Number(ageValue);
     const handleRegistrationClick = async () => {
         setError('');
-
+        
         if (EmailValue === '') {
             setError(`Email Form can't be empty`);
             return;
@@ -50,24 +46,26 @@ export default function RegisterForm() {
             setError(`Password Form can't be empty`);
             return;
         };
-
+        
         if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(EmailValue)) {
             setError('Invalid Email');
             return;
         };
-
+        
         if (!/^(?=.*[0-9])/.test(EmailValue)) {
             setError(`Email must contain number`);
             return;
         };
-
+        
         if (passwordValue.length < 6) {
             setError('Password too short');
             return;
         };
         
-        storeIsAuth(true);
         await dispatch(fetchRegister({ email: EmailValue, password: passwordValue, age }));
+        navigate('/', { replace: true });
+
+        
         setPasswordValue('');
         setAgeValue('');
         setEmailValue('');

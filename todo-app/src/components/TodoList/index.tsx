@@ -37,11 +37,10 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
         storePagelimit(limit);
         storeCurrentPage(page);
         setpageQty(pageQtyFromServer);
-
         if (currentPageFromServer > pageQtyFromServer) {
             setPage(1);
         };
-    }, [page, limit, pageQtyFromServer, status, onError]);
+    }, [page, limit, pageQtyFromServer, onError]);
 
     const handleOnChangePage = (_: unknown, num: number) => {
         setPage(num);

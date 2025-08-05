@@ -58,12 +58,21 @@ interface RefreshResponse {
 
 export const fetchRefresh = createAsyncThunk<
     RefreshResponse,
-    RefreshParams
+    RefreshParams,
+    { rejectValue: string}
 >(
     `auth/refresh`,
-    async ({ refreshToken }, _) => {
-        const response = await axios.post(`${API_URL}/auth/refresh`, { refreshToken });
-        return response.data
+    async ({ refreshToken }, thunkAPI) => {
+        try {
+            const response = await axios.post(`${API_URL}/auth/refresh`, { refreshToken });
+            return response.data
+        }
+        catch (error) {
+            if (axios.isAxiosError(error) && error.response) {
+                return thunkAPI.rejectWithValue(error.response.data?.errorMessage)
+            }
+            return thunkAPI.rejectWithValue("Unknown error")
+        }
     }    
 )
 
@@ -102,7 +111,9 @@ export const fetchProfile = createAsyncThunk<
                     if (error.response.status === 401) {
                     return thunkAPI.rejectWithValue('Ошибка авторизации');
                     }
-                    return thunkAPI.rejectWithValue('Ошибка сервера');
+                    if (error.response.status === 500) {
+                        return thunkAPI.rejectWithValue('Ошибка сервера');
+                    }
                 }   else {
                 return thunkAPI.rejectWithValue('Произошла непредвиденная ошибка');
                 };

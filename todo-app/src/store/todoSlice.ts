@@ -44,12 +44,11 @@ const todoSlice = createSlice({
                 state.pages = action.payload.totalPages,
                 state.currentPage = action.payload.page,
                 state.limit = action.payload.limit;
+                state.error = ``;
             })
             .addCase(fetchTodos.rejected, (state, action) => {
                 if (action.payload) {
                     state.error = action.payload;
-                } else {
-                    state.error = action.error.message || 'Произошла ошибка';
                 }
                 state.onLoading = false;
             })
