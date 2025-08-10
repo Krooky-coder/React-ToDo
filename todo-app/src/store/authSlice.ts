@@ -65,7 +65,7 @@ const authSlice = createSlice({
                     state.token = null;
                 }
             })
-            .addCase(fetchTodos.fulfilled, (state, action) => {
+            .addCase(fetchTodos.fulfilled, (state) => {
                 state.status = 'successful';
                 }
             )
@@ -94,6 +94,7 @@ const authSlice = createSlice({
             })
             .addCase(fetchRefresh.fulfilled, (state, action) => {
                 state.token = action.payload.accessToken;
+                state.token = action.payload.refreshToken;
             })
             .addCase(fetchRefresh.rejected, (state, action) => {
                 state.errorMessage = action.payload;

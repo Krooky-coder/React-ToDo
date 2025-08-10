@@ -3,7 +3,7 @@ import { BURGER_ICON, PROFILE_ICON, LOGOUT_ICON, TasksIconPaths } from "../../as
 import { Container, ProfileBtn, ProfileIcon, ProfileNav } from "./style";
 import useLocalStorage from "../../utils/localStorage";
 import { logoutUser } from "../../store/authSlice";
-import { useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../utils/useAppDispatch";
 
 export default function ProfileBurger() {
@@ -22,7 +22,7 @@ export default function ProfileBurger() {
         setIsOpen(false);
         navigate("/login", {replace: true});
     };
-
+    
     return (
         <Container>
             <ProfileBtn onClick={() => setIsOpen(!isOpen)}>

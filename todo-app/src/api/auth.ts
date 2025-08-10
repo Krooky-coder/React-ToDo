@@ -54,6 +54,7 @@ interface RefreshParams {
 
 interface RefreshResponse {
     accessToken: string;
+    refreshToken: string;
 }
 
 export const fetchRefresh = createAsyncThunk<

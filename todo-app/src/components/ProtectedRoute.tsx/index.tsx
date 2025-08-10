@@ -9,17 +9,13 @@ interface Props {
 export default function ProtectedRoute({ children }: Props) {
     const {isAuth, loading} = useAuth();
 
-    return (
-        <>
-            {isAuth ? (
-                children
-            ) : ( 
-                loading ? (
-                    <div>loading</div>
-                ) : (
-                    <Navigate to="/login" replace />
-                )
-            )}
-        </>
-    )
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (!isAuth) {
+        return <Navigate to="/login" replace />;
+    }
+
+    return <>{children}</>;
 }

@@ -34,6 +34,7 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
+        dispatch(fetchTodos({ page, limit, accessToken }));
         storePagelimit(limit);
         storeCurrentPage(page);
         setpageQty(pageQtyFromServer);

@@ -1,27 +1,53 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "./useAppDispatch";
-import { fetchProfile, fetchRefresh } from "../api/auth";
+import { fetchProfile } from "../api/auth";
 import useLocalStorage from "./localStorage";
 import { TokenIsExpired } from "./RefreshToken";
-import useRefreshToken from "./useRefreshToken";
+import { fetchRefresh } from "../api/auth";
 
 export default function useAuth(): { isAuth: boolean; loading: boolean } {
+    const hasRunRef = useRef(false)
     const dispatch = useAppDispatch();
-    const { currentToken } = useRefreshToken();
+    const { 
+        initialValue: accessToken, 
+        setStoredValue: storeAccessToken,
+    } = useLocalStorage('Access Token', 'biliboba');
+    const { 
+        initialValue: refreshToken, 
+        setStoredValue: storeRefreshToken,
+    } = useLocalStorage('Refresh Token', '');
+    
     const [isAuth, setIsAuth] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const checkAuth = async () => {
-        if (!currentToken) {
+    const checkAndRefreshToken = async () => {
+        if (!accessToken && !refreshToken) {
             setIsAuth(false);
-            setLoading(false);
-            return;
+            return null;
         }
 
+        if (TokenIsExpired(accessToken) && refreshToken) {
+            const result = await dispatch(fetchRefresh({ refreshToken }));
+            if (fetchRefresh.fulfilled.match(result)) {
+                storeRefreshToken(result.payload.refreshToken);
+                storeAccessToken(result.payload.accessToken);
+                return result.payload.accessToken;
+            }
+        }
+        return accessToken;
+    };
+
+    const checkAuth = async () => {
         setLoading(true);
         try {
-            const profileResult = await dispatch(fetchProfile({ accessToken: currentToken }));
-            
+            const validToken = await checkAndRefreshToken();
+
+            if (!validToken) {
+                setIsAuth(false);
+                return;
+            }
+
+            const profileResult = await dispatch(fetchProfile({ accessToken: validToken }));
             if (fetchProfile.fulfilled.match(profileResult)) {
                 setIsAuth(true);
             } else {
@@ -36,8 +62,22 @@ export default function useAuth(): { isAuth: boolean; loading: boolean } {
     };
 
     useEffect(() => {
+        if (hasRunRef.current) return;
+        hasRunRef.current = true;
+
         checkAuth();
-    }, [currentToken]); // Зависимость от currentToken
+
+        const handleStorageChange = (e: StorageEvent) => {
+        if (e.key === 'Access Token') {
+            checkAuth();
+        }};
+
+        window.addEventListener('storage', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
 
     return { isAuth, loading };
 }
