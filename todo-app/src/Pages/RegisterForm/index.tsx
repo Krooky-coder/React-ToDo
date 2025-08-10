@@ -41,11 +41,6 @@ export default function RegisterForm() {
             return;
         };
         
-        if (!/^(?=.*[0-9])/.test(EmailValue)) {
-            setError(`Email must contain number`);
-            return;
-        };
-        
         if (passwordValue.length < 6) {
             setError('Password too short');
             return;
