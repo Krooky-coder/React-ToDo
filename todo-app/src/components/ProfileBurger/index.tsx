@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { BURGER_ICON, PROFILE_ICON, LOGOUT_ICON, TasksIconPaths } from "../../assets/icons";
 import { Container, ProfileBtn, ProfileIcon, ProfileNav } from "./style";
-import useLocalStorage from "../../utils/localStorage";
+import useLocalStorage from "../../hooks/useLocalStorage";
 import { logoutUser } from "../../store/authSlice";
 import {  useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../utils/useAppDispatch";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
 
 export default function ProfileBurger() {
     const [isOpen, setIsOpen] = useState(false);

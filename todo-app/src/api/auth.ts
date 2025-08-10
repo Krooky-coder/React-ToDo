@@ -16,13 +16,23 @@ interface RegisterResponse {
 
 export const fetchRegister = createAsyncThunk<
     RegisterResponse,
-    RegisterParams
+    RegisterParams,
+    { rejectValue: string }
 >(
     `auth/register`,
-    async ({email, password, age}, _) => {
-        const response = await axios.post(`${API_URL}/auth/register`, { email, password, age });
-        console.log(response)
-        return response.data
+    async ({email, password, age}, thunkAPI) => {
+        try {
+            const response = await axios.post(`${API_URL}/auth/register`, { email, password, age });
+            return response.data
+        }   catch (err) {
+            if (axios.isAxiosError(err)) {
+                if (err.response) {
+                    return thunkAPI.rejectWithValue(err.response.data.error || err.message);
+                }
+                return thunkAPI.rejectWithValue(err.message);
+            }
+            return thunkAPI.rejectWithValue('Unknown error occurred');
+        }
     }    
 )
 
@@ -39,12 +49,23 @@ interface LoginResponse {
 
 export const fetchLogin = createAsyncThunk<
     LoginResponse,
-    LoginParams
+    LoginParams,
+    { rejectValue: string }
 >(
     `auth/login`,
-    async ({email, password}, _) => {
-        const response = await axios.post(`${API_URL}/auth/login`, { email, password });
-        return response.data
+    async ({email, password}, thunkAPI) => {
+        try {
+            const response = await axios.post(`${API_URL}/auth/login`, { email, password });
+            return response.data
+        }   catch (err) {
+            if (axios.isAxiosError(err)) {
+                if (err.response) {
+                    return thunkAPI.rejectWithValue(err.response.data.error || err.message);
+                }
+                return thunkAPI.rejectWithValue(err.message);
+            }
+            return thunkAPI.rejectWithValue('Unknown error occurred');
+        }
     }    
 )
 
@@ -60,7 +81,7 @@ interface RefreshResponse {
 export const fetchRefresh = createAsyncThunk<
     RefreshResponse,
     RefreshParams,
-    { rejectValue: string}
+    { rejectValue: string }
 >(
     `auth/refresh`,
     async ({ refreshToken }, thunkAPI) => {
@@ -125,28 +146,39 @@ export const fetchProfile = createAsyncThunk<
 
 interface ChangePassParams {
     accessToken: string;
-    oldPassword: string;
-    newPassword: string;
+    oldPass: string;
+    newPass: string;
 }
 
 export const ChangePass = createAsyncThunk<
     any,
-    ChangePassParams
+    ChangePassParams,
+    { rejectValue: string}
 > (
     'auth/change-password',
-    async ({ oldPassword, newPassword, accessToken}, _) => {
-        const response = await axios.post(`${API_URL}/auth/change-password`, 
-            { 
-                oldPassword,
-                newPassword,
-            },
-            {
-                headers: {
-                    'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${accessToken}`
-                } 
+    async ({ oldPass, newPass, accessToken}, thunkAPI) => {
+        try {
+            const response = await axios.post(`${API_URL}/auth/change-password`, 
+                { 
+                    oldPass,
+                    newPass,
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json', 
+                        'Authorization': `Bearer ${accessToken}`
+                    } 
+                }
+            )
+            return response.data;
+        }   catch (err) {
+                if (axios.isAxiosError(err)) {
+                    if (err.response) {
+                    return thunkAPI.rejectWithValue(err.response.data.error || err.message);
+                    }
+                    return thunkAPI.rejectWithValue(err.message);
+                }
+                return thunkAPI.rejectWithValue('Unknown error occurred');
             }
-        )
-        return response.data;
     }
 );

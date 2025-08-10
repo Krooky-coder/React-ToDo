@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useAppDispatch } from "./useAppDispatch";
 import { fetchProfile } from "../api/auth";
-import useLocalStorage from "./localStorage";
-import { TokenIsExpired } from "./RefreshToken";
+import useLocalStorage from "./useLocalStorage";
+import { TokenIsExpired } from "./useRefreshToken";
 import { fetchRefresh } from "../api/auth";
 
 export default function useAuth(): { isAuth: boolean; loading: boolean } {
@@ -26,7 +26,11 @@ export default function useAuth(): { isAuth: boolean; loading: boolean } {
             return null;
         }
 
-        if (TokenIsExpired(accessToken) && refreshToken) {
+        if(!TokenIsExpired(accessToken)) {
+            return accessToken;
+        }
+
+        if (refreshToken) {
             const result = await dispatch(fetchRefresh({ refreshToken }));
             if (fetchRefresh.fulfilled.match(result)) {
                 storeRefreshToken(result.payload.refreshToken);
@@ -34,7 +38,9 @@ export default function useAuth(): { isAuth: boolean; loading: boolean } {
                 return result.payload.accessToken;
             }
         }
-        return accessToken;
+
+        setIsAuth(false);
+        return null
     };
 
     const checkAuth = async () => {

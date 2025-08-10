@@ -1,17 +1,16 @@
 import { useEffect, useState, type KeyboardEvent } from "react";
 import { Container, GroupContainer, ShowPassBtn, ErrorSpan, Header, LogoDiv, LogoSpan, LogoBtnContainer, LogoBtn, Body, LogForm, EyeIcon, LoginBtn } from "./style"
 import { OPEN_EYE_PATHS, CLOSED_EYE_PATHS } from '../../assets/icons'
-import { useAppSelector } from "../../utils/useAppSeleсtor";
-import useLocalStorage from "../../utils/localStorage";
+import { useAppSelector } from "../../hooks/useAppSeleсtor";
+import useLocalStorage from "../../hooks/useLocalStorage";
 import { useNavigate } from "react-router-dom";
 import { fetchLogin } from "../../api/auth";
-import { useAppDispatch } from "../../utils/useAppDispatch";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
 
 export default function LoginForm() {
     const refreshFromServer = useAppSelector(state => state.auth.refreshToken);
     const tokenFromServer = useAppSelector(state => state.auth.token);
     const statusFromServer = useAppSelector(state => state.auth.status);
-    const erroeMessage = useAppSelector(state => state.auth.errorMessage);
     
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
@@ -36,30 +35,18 @@ export default function LoginForm() {
     const handleLoginClick = async () => {
         setError('');
         
-        if (EmailValue === '') {
-            setError(`Email form can't be empty`);
-            return;
-        };
-        
-        if (passwordValue === '') {
-            setError(`Password form can't be empty`);
-            return;
-        };
-        
-        try {
-            await dispatch(fetchLogin({ email: EmailValue, password: passwordValue }));
-            navigate('/');
-        }   catch (error) {
-            console.error(error);
-        };
-        
-        if (erroeMessage === 'E-mail or Password wrong') {
-            setError(erroeMessage);
-        };
-        
+        const result = await dispatch(fetchLogin({ email: EmailValue, password: passwordValue }));
+
+        if (fetchLogin.rejected.match(result)) {
+            if (result.payload) {
+                setError(result.payload);
+                return;
+            }  
+        }
+
+        navigate('/');
         setPasswordValue('');
         setEmailValue('');
-
     };
 
     const handleShowPassword = (): void => {

@@ -1,8 +1,8 @@
 import {  useState, type ChangeEvent, type KeyboardEvent} from 'react';
 import { Button, CustomInput, SpanError, Container} from './style';
 import { postTodos, fetchTodos } from '../../api/todos';
-import useLocalStorage from '../../utils/localStorage';
-import { useAppDispatch } from '../../utils/useAppDispatch';
+import useLocalStorage from '../../hooks/useLocalStorage';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
 
 export default function AddTodo () {
     const [inputValue, setInputValue] = useState<string>('');

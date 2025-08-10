@@ -1,26 +1,20 @@
 import './App.css'
 import { HomePage } from '../Pages/HomePage';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { PageNotFound } from '../Pages/PageNotFound';
 import RegisterForm from '../Pages/RegisterForm';
 import { ThemeProvider } from 'styled-components';
-import useLocalStorage from '../utils/localStorage';
+import useLocalStorage from '../hooks/useLocalStorage.ts';
 import { blackTheme, lightTheme } from '../Theme';
 import LoginForm from '../Pages/LoginForm/index'
 import { ProfilePage } from '../Pages/ProfilePage';
 import ProtectedRoute from '../components/ProtectedRoute.tsx';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ThemeChange from '../components/ThemeChange/index.tsx';
 import { Container } from './style.ts';
 
 function App() {
   const { initialValue: themeValue } = useLocalStorage<string>('Theme', 'light');
-
-  const location = useLocation();
-
-  useEffect(() => {
-
-  },[location.pathname])
 
   const themeToProvide = themeValue === 'light' ? lightTheme : blackTheme;
   const [theme, setTheme] = useState<string>(themeValue);

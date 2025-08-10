@@ -1,4 +1,4 @@
-import useLocalStorage from '../../utils/localStorage';
+import useLocalStorage from '../../hooks/useLocalStorage';
 import { ButtonThemeChange, ToggleIcon } from './style';
 
 interface ThemeChangeProps {

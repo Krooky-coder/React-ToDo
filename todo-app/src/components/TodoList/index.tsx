@@ -4,10 +4,11 @@ import EditTodo from '../EditTodo/index';
 import { Pagination, Stack } from "@mui/material";
 import { useEffect, useState } from 'react';
 import { deleteTodos, fetchTodos, patchTodos } from '../../api/todos';
-import useLocalStorage from '../../utils/localStorage';
+import useLocalStorage from '../../hooks/useLocalStorage';
 import { switchStatus } from '../../store/todoSlice';
-import { useAppSelector } from '../../utils/useAppSeleсtor';
-import { useAppDispatch } from '../../utils/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSeleсtor';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import useAuth from '../../hooks/useAuth';
 
 interface TodoListProps {
     sort: string;
@@ -24,6 +25,7 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
 
     const taskToRender = [...tasksFromServer];
     
+    const { isAuth } = useAuth();
     const { initialValue: accessToken} = useLocalStorage<string>('Access Token', '');
     const { initialValue: CurrentPage, setStoredValue: storeCurrentPage } = useLocalStorage<number>('CurrentPage', currentPageFromServer);
     const { initialValue: LocalPagelimit, setStoredValue: storePagelimit } = useLocalStorage<number>('Limit', pageLimitFromServer);
@@ -32,6 +34,9 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
     const [page, setPage] = useState<number>(CurrentPage);
     const [pageQty, setpageQty] = useState<number>(pageQtyFromServer);
     const dispatch = useAppDispatch();
+
+    useEffect(() => {
+    }, [isAuth]);
 
     useEffect(() => {
         dispatch(fetchTodos({ page, limit, accessToken }));
@@ -49,7 +54,7 @@ export default function TodoList ({ sort, setSort }: TodoListProps) {
     
     const handleClickSetDone = async (itemId: string, completed: boolean): Promise<void> => {
         await dispatch(patchTodos({ id: itemId, completed: !completed, accessToken }));
-        await dispatch(switchStatus({ itemId, completed }));
+        dispatch(switchStatus({ itemId, completed }));
     };
     
     const handleClickDelete = async (itemId: string): Promise<void> => {

@@ -1,38 +1,54 @@
-import { useState } from "react";
-import { useAppSelector } from "../../utils/useAppSeleсtor"
+import { useEffect, useState } from "react";
+import { useAppSelector } from "../../hooks/useAppSeleсtor"
 import { ChangePass } from "../../api/auth";
-import useLocalStorage from "../../utils/localStorage";
+import useLocalStorage from "../../hooks/useLocalStorage";
 import { Container, Header, ErrorSpan, ProfileDiv, Span, Ul, InputsDiv, ChangePassDiv, ChangePassBtn, PassP, CustomInput } from "./style";
 import ProfileBurger from "../../components/ProfileBurger";
-import { useAppDispatch } from "../../utils/useAppDispatch";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import useAuth from "../../hooks/useAuth";
+
+interface passParams {
+    oldPassword: string;
+    newPassword: string;
+    newPasswordAgain: string;
+}
 
 export const ProfilePage = () => {
     const { initialValue: accessToken} = useLocalStorage<string>('Access Token', '');
 
     const profile = useAppSelector(state => state.auth.user);
     const loadingStatus = useAppSelector((state) => state.todos.onLoading);
-    const status = useAppSelector(state => state.auth.status);
     const erroeMessage = useAppSelector(state => state.auth.errorMessage);
     const dispatch = useAppDispatch();
 
-    const [oldPassword, setOldPassword] = useState<string>('');
-    const [newPassword, setNewPassword] = useState<string>('');
-    const [newPasswordAgain, setNewPasswordAgain] = useState<string>('');
+    const [passObj, setPassObj] = useState<passParams>({
+        oldPassword:'',
+        newPassword: '',
+        newPasswordAgain: '',
+    });
     const [message, setMessage] = useState<string>('');
+    const { isAuth } = useAuth();
+
+    useEffect(() => {
+
+    },[isAuth])
 
     const clearAllForms = () => {
-        setOldPassword('');
-        setNewPassword('');
-        setNewPasswordAgain('');
+        setPassObj({
+        oldPassword:'',
+        newPassword: '',
+        newPasswordAgain: '',
+        })
     }
 
     const handlePassChangeClick = async () => {
+        const { oldPassword, newPassword, newPasswordAgain } = passObj
         if (erroeMessage === 'Ошибка сервера') {
             setMessage('Ошибка сервера');
             return;
         }
-        if (oldPassword.length === 0) {
-            setMessage(`Old pass cant be empty`);
+        if (newPassword.length < 6) {
+            setMessage('new password too short');
             clearAllForms();
             return;
         }
@@ -41,20 +57,25 @@ export const ProfilePage = () => {
             clearAllForms();
             return;
         }
-        await dispatch(ChangePass({ accessToken, oldPassword, newPassword }));
-        if (status === 'failed') {
-            setMessage('Wrong password');
-            clearAllForms();
+
+        const result = await dispatch(ChangePass({ oldPass: oldPassword, newPass: newPassword, accessToken }));
+        if (ChangePass.rejected.match(result)) {
+            if (result.payload) {
+                setMessage(result.payload);
+            }
             return;
         }
-        if (newPassword.length < 6) {
-            setMessage('new password too short');
-            clearAllForms();
-            return;
-        }
-        setMessage('password change successfuly');
+        setMessage(`password changed successful`)
         clearAllForms();
-    }
+        }
+
+        const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            const { name, value} = e.target;
+            setPassObj(prev => ({
+                ...prev,
+                [name]: value,
+            }))
+        }
 
     return (
     <>  
@@ -84,18 +105,18 @@ export const ProfilePage = () => {
                                 <PassP>Old password</PassP>
                                 <CustomInput
                                 type="password" 
-                                name="oldPass"
-                                value={oldPassword}
-                                onChange={(e) => setOldPassword(e.target.value)}
+                                name="oldPassword"
+                                value={passObj.oldPassword}
+                                onChange={handleInputChange}
                                 />
                             </div>
                             <div>
                                 <PassP>New password</PassP>
                                 <CustomInput 
                                 type="password"
-                                name="newPass"
-                                value={newPassword}
-                                onChange={(e) => setNewPassword(e.target.value)}
+                                name="newPassword"
+                                value={passObj.newPassword}
+                                onChange={handleInputChange}
                                 />
                             </div>
                             <div>
@@ -103,9 +124,9 @@ export const ProfilePage = () => {
                                 <CustomInput 
                                 onPaste={(e) => e.preventDefault()}
                                 type="password"
-                                name="newPass"
-                                value={newPasswordAgain}
-                                onChange={(e) => setNewPasswordAgain(e.target.value)}
+                                name="newPasswordAgain"
+                                value={passObj.newPasswordAgain}
+                                onChange={handleInputChange}
                                 />
                             </div>
                         </InputsDiv>

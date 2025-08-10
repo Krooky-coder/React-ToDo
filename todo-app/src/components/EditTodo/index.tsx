@@ -1,9 +1,9 @@
 import { Button, CustomInput } from "./style";
 import { useState, type ChangeEvent} from "react";
 import { putTodos, fetchTodos } from "../../api/todos";
-import useLocalStorage from "../../utils/localStorage";
-import { useAppSelector } from "../../utils/useAppSeleсtor";
-import { useAppDispatch } from "../../utils/useAppDispatch";
+import useLocalStorage from "../../hooks/useLocalStorage";
+import { useAppSelector } from "../../hooks/useAppSeleсtor";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
 
 export interface EditProps {
     itemId: string,

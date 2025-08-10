@@ -99,8 +99,9 @@ const authSlice = createSlice({
             .addCase(fetchRefresh.rejected, (state, action) => {
                 state.errorMessage = action.payload;
             })
-            .addCase(ChangePass.rejected, (state) => {
+            .addCase(ChangePass.rejected, (state, action) => {
                 state.status = 'failed';
+                state.errorMessage = action.payload;
             })
             .addCase(ChangePass.pending, (state) => {
                 state.status = 'loading';

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import useLocalStorage from "../../utils/localStorage";
+import { useState } from "react";
+import useLocalStorage from "../../hooks/useLocalStorage";
 import { Container } from "./style";
 import AddTodo from "../../components/AddTodo";
 import TodoList from "../../components/TodoList";
@@ -7,14 +7,9 @@ import { Header } from "./style";
 import ProfileBurger from "../../components/ProfileBurger";
 
 export const HomePage = () => {
-    const { initialValue : sortValue, setStoredValue : storeSortValue} = useLocalStorage<'new'|'old'>('SortType', 'new');
-    const { initialValue : accessToken } = useLocalStorage<string>('Access Token', '');
+    const { initialValue : sortValue } = useLocalStorage<'new'|'old'>('SortType', 'new');
 
     const [sort, setSort] = useState<'new'|'old'>(sortValue);
-
-    useEffect(() => {
-        storeSortValue(sort);
-    }, [sort, accessToken]);
 
     return (
         <Container>

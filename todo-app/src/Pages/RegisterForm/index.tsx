@@ -2,10 +2,10 @@ import { Container, GroupContainer, ShowPassBtn, ErrorSpan, Header, LogoDiv, Log
 import { OPEN_EYE_PATHS, CLOSED_EYE_PATHS } from '../../assets/icons'
 import { useEffect, useState, type KeyboardEvent} from 'react';
 import { fetchRegister } from "../../api/auth";
-import useLocalStorage from "../../utils/localStorage";
-import { useAppSelector } from "../../utils/useAppSeleсtor";
+import useLocalStorage from "../../hooks/useLocalStorage";
+import { useAppSelector } from "../../hooks/useAppSeleсtor";
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch } from "../../utils/useAppDispatch";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
 
 export default function RegisterForm() { 
     const refreshFromServer = useAppSelector(state => state.auth.refreshToken);
@@ -36,16 +36,6 @@ export default function RegisterForm() {
     const handleRegistrationClick = async () => {
         setError('');
         
-        if (EmailValue === '') {
-            setError(`Email Form can't be empty`);
-            return;
-        };
-        
-        if (passwordValue === '') {
-            setError(`Password Form can't be empty`);
-            return;
-        };
-        
         if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(EmailValue)) {
             setError('Invalid Email');
             return;
@@ -61,13 +51,16 @@ export default function RegisterForm() {
             return;
         };
         
-        try {
-            await dispatch(fetchRegister({ email: EmailValue, password: passwordValue, age }));
-            navigate('/', { replace: true });
-        }   catch (error) {
-            console.error(error);
+        const result = await dispatch(fetchRegister({ email: EmailValue, password: passwordValue, age }));
+
+        if (fetchRegister.rejected.match(result)) {
+            if (result.payload) {
+                setError(result.payload);
+                return;
+            }
         }
-        
+
+        navigate('/', { replace: true });
         setPasswordValue('');
         setAgeValue('');
         setEmailValue('');
