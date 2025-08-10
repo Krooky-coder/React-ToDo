@@ -58,14 +58,14 @@ export const ProfilePage = () => {
             return;
         }
 
-        const result = await dispatch(ChangePass({ oldPass: oldPassword, newPass: newPassword, accessToken }));
+        const result = await dispatch(ChangePass({ oldPassword, newPassword, accessToken }));
         if (ChangePass.rejected.match(result)) {
             if (result.payload) {
                 setMessage(result.payload);
             }
             return;
         }
-        setMessage(`password changed successful`)
+        setMessage(`password changed successfully`)
         clearAllForms();
         }
 

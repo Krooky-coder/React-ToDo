@@ -146,8 +146,8 @@ export const fetchProfile = createAsyncThunk<
 
 interface ChangePassParams {
     accessToken: string;
-    oldPass: string;
-    newPass: string;
+    oldPassword: string;
+    newPassword: string;
 }
 
 export const ChangePass = createAsyncThunk<
@@ -156,12 +156,12 @@ export const ChangePass = createAsyncThunk<
     { rejectValue: string}
 > (
     'auth/change-password',
-    async ({ oldPass, newPass, accessToken}, thunkAPI) => {
+    async ({ oldPassword, newPassword, accessToken}, thunkAPI) => {
         try {
             const response = await axios.post(`${API_URL}/auth/change-password`, 
                 { 
-                    oldPass,
-                    newPass,
+                    oldPassword,
+                    newPassword,
                 },
                 {
                     headers: {

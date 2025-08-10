@@ -11,10 +11,12 @@ export default function useAuth(): { isAuth: boolean; loading: boolean } {
     const { 
         initialValue: accessToken, 
         setStoredValue: storeAccessToken,
+        removeValue: removeAccessToken
     } = useLocalStorage('Access Token', 'biliboba');
     const { 
         initialValue: refreshToken, 
         setStoredValue: storeRefreshToken,
+        removeValue: removeRefreshToken
     } = useLocalStorage('Refresh Token', '');
     
     const [isAuth, setIsAuth] = useState(false);
@@ -38,7 +40,8 @@ export default function useAuth(): { isAuth: boolean; loading: boolean } {
                 return result.payload.accessToken;
             }
         }
-
+        removeAccessToken();
+        removeRefreshToken();
         setIsAuth(false);
         return null
     };
